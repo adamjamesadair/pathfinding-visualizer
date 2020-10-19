@@ -1,0 +1,5 @@
+TODO
+
+Compute shortest path (dikstra)
+Erase walls with right click
+Fix dragging bug with image beign dragged
