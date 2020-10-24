@@ -1,5 +1,7 @@
 TODO
 
-Compute shortest path (dikstra)
-Erase walls with right click
+disable buttons while running
+Add different speed options
+Fix clear all button
+Erase walls with right click?
 Fix dragging bug with image beign dragged

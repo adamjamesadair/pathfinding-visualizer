@@ -1,36 +1,27 @@
 export function computeDijkstra(grid, startNodeCoords, finishNodeCoords) {
-    const startNode = grid[startNodeCoords[0]][startNodeCoords[1]];
-    startNode.distance = 0;
-    const finishNode = grid[finishNodeCoords[0]][finishNodeCoords[1]];
-    var visitedNodes = [];
-    
-    var currentNode = startNode;
-    const unvisitedNodes = getAllNodes(grid);
+  const startNode = grid[startNodeCoords[0]][startNodeCoords[1]];
+  const finishNode = grid[finishNodeCoords[0]][finishNodeCoords[1]];
+  startNode.distance = 0;
+  var visitedNodes = [];
+  const unvisitedNodes = getAllNodes(grid);
 
-    while(unvisitedNodes.length){
-        // Get the unvisitied neighbors
-        var unvisitedNeighbors = getUnvisitedNeighbors(currentNode, grid);
-        // Sort the neighbors by distance
-        sortNodesByDistance(unvisitedNeighbors);
-        // Visit the closest unvisited neighbor
-        closestNode = unvisitedNeighbors.unshift();
-        visitedNodes.push(closestNode);
-        // Mark the node as visited
-        closestNode.isVisited = true;
-        // Check if the current node is the finish node
-        if(currentNode == finishNode) return visitedNodes;
-    }
+  while(unvisitedNodes.length){
+      // Sort the nodes by distance
+      sortNodesByDistance(unvisitedNodes);
+      // Get the closest unvisited node
+      var closestNode = unvisitedNodes.shift();
+      // unvisitedNodes.unshift();
+      // Skip if the closest node is a wall
+      if(closestNode.type == "wallNode") continue;
+      // Return if there are no possible routes
+      if (closestNode.distance === Infinity) return visitedNodes;
+      closestNode.isVisited = true;
+      visitedNodes.push(closestNode);
 
-    // Get closest node
-    var closestNode = grid[0][0];
-    {grid.map((row)=> {
-        {row.map((node)=>{
-            if (node.distance < closestNode.distance){
-                closestNode = node;
-            }
-        })}
-    })}
-    console.log(closestNode)
+      // Check if the current node is the finish node
+      if(closestNode == finishNode) return visitedNodes;
+      updateUnvisitedNeighbors(closestNode, grid);
+  }
 }
 
 function getAllNodes(grid) {
@@ -41,6 +32,14 @@ function getAllNodes(grid) {
     }
   }
   return nodes;
+}
+
+function updateUnvisitedNeighbors(node, grid) {
+  const unvisitedNeighbors = getUnvisitedNeighbors(node, grid);
+  for (const neighbor of unvisitedNeighbors) {
+    neighbor.distance = node.distance + 1;
+    neighbor.previousNode = node;
+  }
 }
 
 function getUnvisitedNeighbors(node, grid) {
@@ -57,4 +56,14 @@ function getUnvisitedNeighbors(node, grid) {
 
 function sortNodesByDistance(nodes) {
     nodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
+}
+
+export function getNodesInShortestPathOrder(finishNode) {
+  const nodesInShortestPathOrder = [];
+  var currentNode = finishNode;
+  while (currentNode !== null) {
+    nodesInShortestPathOrder.unshift(currentNode);
+    currentNode = currentNode.previousNode;
+  }
+  return nodesInShortestPathOrder;
 }
