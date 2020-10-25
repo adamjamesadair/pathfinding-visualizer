@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import Node from './Node/Node';
 
 import {visualizeDijkstra} from '../Algorithms/dijkstra';
+import {visualizeAStar} from '../Algorithms/aStar';
 import './AlgoVisualizer.css';  
 
 export default class AlgoVisualizer extends Component {
@@ -91,6 +92,7 @@ export default class AlgoVisualizer extends Component {
             <div>
                 <h1>Pathfinding Visualizer</h1>
                 <button className="btn btn-outline-dark" onClick={() => visualizeDijkstra(grid, startNodeCoords, finishNodeCoords)}>Dijkstra's Algorithm</button>
+                <button className="btn btn-outline-dark" onClick={() => visualizeAStar(grid, startNodeCoords, finishNodeCoords)}>A*</button>
                 <button className="btn btn-outline-dark" onClick={()=> this.resetGrid()}>Reset</button>
                 <button className="btn btn-outline-dark" onClick={()=> this.clearPath()}>Clear Path</button>
                 <button className="btn btn-outline-dark" onClick={()=> this.resetGrid(this.randomizeStartFinishNodes)}>Randomize Start and End Nodes</button>

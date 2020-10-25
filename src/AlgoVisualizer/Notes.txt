@@ -1,4 +1,7 @@
 TODO
 
+create file for generic algorithms
+Add different heuristics for A*? Allow diagonal movement?
+
 Erase walls with right click?
 Fix dragging bug with image beign dragged

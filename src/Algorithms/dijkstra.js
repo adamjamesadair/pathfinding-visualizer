@@ -24,7 +24,7 @@ export function computeDijkstra(grid, startNodeCoords, finishNodeCoords) {
   }
 }
 
-function getAllNodes(grid) {
+export function getAllNodes(grid) {
   const nodes = [];
   for (const row of grid) {
     for (const node of row) {
@@ -42,7 +42,7 @@ function updateUnvisitedNeighbors(node, grid) {
   }
 }
 
-function getUnvisitedNeighbors(node, grid) {
+export function getUnvisitedNeighbors(node, grid) {
     const neighbors = [];
     const {row, col} = node;
 
@@ -54,7 +54,7 @@ function getUnvisitedNeighbors(node, grid) {
     return neighbors.filter(neighbor => !neighbor.isVisited);
 }
 
-function sortNodesByDistance(nodes) {
+export function sortNodesByDistance(nodes) {
     nodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
 }
 
@@ -75,7 +75,7 @@ export function visualizeDijkstra(grid, startNodeCoords, finishNodeCoords) {
 }
 
 
-function animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
+export function animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
   for (let i = 0; i <= visitedNodesInOrder.length; i++) {
       if (i === visitedNodesInOrder.length) {
           setTimeout(() => {
