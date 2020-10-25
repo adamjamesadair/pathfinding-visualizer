@@ -52,7 +52,7 @@ export default class AlgoVisualizer extends Component {
         this.setState({ grid });
     }
 
-    resetGrid() {
+    resetGrid(callback) {
         var {grid, startNodeCoords, finishNodeCoords} = this.state;
 
         // reset node classnames
@@ -66,11 +66,10 @@ export default class AlgoVisualizer extends Component {
         document.getElementById(`node-${startNodeCoords[0]}-${startNodeCoords[1]}`).className = 'node node-start';
         document.getElementById(`node-${finishNodeCoords[0]}-${finishNodeCoords[1]}`).className = 'node node-finish';
         grid = getInitialGrid(this.state);
-        this.setState({ grid });
+        this.setState({ grid }, callback);
     }
 
     randomizeStartFinishNodes() {
-        this.resetGrid();
         var {grid, startNodeCoords, finishNodeCoords } = this.state;
         
         grid[startNodeCoords[0]][startNodeCoords[1]] = createNode(startNodeCoords[0], startNodeCoords[1], "default", Infinity);
@@ -78,10 +77,10 @@ export default class AlgoVisualizer extends Component {
         
         startNodeCoords = [randomInteger(0, grid.length - 1), randomInteger(0, grid[0].length - 1)];
         finishNodeCoords = [randomInteger(0, grid.length - 1), randomInteger(0, grid[0].length - 1)];
-
+        
         grid[startNodeCoords[0]][startNodeCoords[1]] = createNode(startNodeCoords[0], startNodeCoords[1], "startNode", 0);
         grid[finishNodeCoords[0]][finishNodeCoords[1]] = createNode(finishNodeCoords[0], finishNodeCoords[1], "finishNode", Infinity);
-
+        
         this.setState({ grid, startNodeCoords, finishNodeCoords });
     }
 
@@ -94,7 +93,7 @@ export default class AlgoVisualizer extends Component {
                 <button className="btn btn-outline-dark" onClick={() => visualizeDijkstra(grid, startNodeCoords, finishNodeCoords)}>Dijkstra's Algorithm</button>
                 <button className="btn btn-outline-dark" onClick={()=> this.resetGrid()}>Reset</button>
                 <button className="btn btn-outline-dark" onClick={()=> this.clearPath()}>Clear Path</button>
-                <button className="btn btn-outline-dark" onClick={()=> this.randomizeStartFinishNodes()}>Randomize Start and End Nodes</button>
+                <button className="btn btn-outline-dark" onClick={()=> this.resetGrid(this.randomizeStartFinishNodes)}>Randomize Start and End Nodes</button>
                 <div className="grid">
                     {grid.map((row, rowIdx) => {
                         return (
