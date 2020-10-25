@@ -42,7 +42,7 @@ export default class AlgoVisualizer extends Component {
             for(var node of row){
                 // update node values
                 var distance = node.type === "startNode" ? 0 : Infinity; 
-                node = createNode(node.row, node.col, node.type, distance);
+                grid[node.row][node.col] = createNode(node.row, node.col, node.type, distance);
                 // update css class
                 if(node.type === "default"){
                     document.getElementById(`node-${node.row}-${node.col}`).className = 'node';
