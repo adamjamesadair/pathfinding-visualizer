@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import Node from './Node/Node';
 
-import {computeDijkstra, getNodesInShortestPathOrder} from '../Algorithms/dijkstra';
+import {visualizeDijkstra} from '../Algorithms/dijkstra';
 import './AlgoVisualizer.css';  
 
 export default class AlgoVisualizer extends Component {
@@ -30,66 +30,30 @@ export default class AlgoVisualizer extends Component {
         const newGrid = getWallUpdatedGrid(this.state.grid, row, col);
         this.setState({ grid: newGrid });
     }
-
+    
     handleMouseUp() {
         this.setState({ mouseIsPressed: false });
     }
-
+    
     clearPath() {
-        // TODO
-        // const {grid} = this.state;
-        // const newGrid = grid.slice();
-        // const node = newGrid[row][col];
-        // const newNode = {
-        //     ...node,
-        //     distance: Infinity,
-        //     isVisited: false,
-        // };
-        // newGrid[row][col] = newNode;
-        // grid = newGrid;
-        // this.setState({ grid });
-    }
-
-    animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
-        for (let i = 0; i <= visitedNodesInOrder.length; i++) {
-        if (i === visitedNodesInOrder.length) {
-            setTimeout(() => {
-                this.animateShortestPath(nodesInShortestPathOrder);
-            }, 10 * i);
-            return;
+        var {grid} = this.state;
+        
+        for(const row of grid) {
+            for(var node of row){
+                // update node values
+                var distance = node.type === "startNode" ? 0 : Infinity; 
+                node = createNode(node.row, node.col, node.type, distance);
+                // update css class
+                if(node.type === "default"){
+                    document.getElementById(`node-${node.row}-${node.col}`).className = 'node';
+                }
+            }
         }
-        setTimeout(() => {
-                const node = visitedNodesInOrder[i];
-                document.getElementById(`node-${node.row}-${node.col}`).className =
-                document.getElementById(`node-${node.row}-${node.col}`).className + ' node-visited';
-            }, 10 * i);
-        }
+        this.setState({ grid });
     }
-
-    animateShortestPath(nodesInShortestPathOrder) {
-        for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
-        setTimeout(() => {
-            const node = nodesInShortestPathOrder[i];
-            document.getElementById(`node-${node.row}-${node.col}`).className = 
-            document.getElementById(`node-${node.row}-${node.col}`).className + ' node-shortest-path';
-        }, 50 * i);
-        }
-    }
-
-    visualizeDijkstra() {
-        const {grid} = this.state;
-        const {startNodeCoords} = this.state;
-        const {finishNodeCoords} = this.state;
-
-        const visitedNodesInOrder = computeDijkstra(grid, startNodeCoords, finishNodeCoords);
-        const nodesInShortestPathOrder = getNodesInShortestPathOrder(grid[finishNodeCoords[0]][finishNodeCoords[1]]);
-        this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
-    } 
 
     resetGrid() {
-        var {grid} = this.state;
-        const {startNodeCoords} = this.state;
-        const {finishNodeCoords} = this.state;
+        var {grid, startNodeCoords, finishNodeCoords} = this.state;
 
         // reset node classnames
         for (const row of grid) {
@@ -105,15 +69,32 @@ export default class AlgoVisualizer extends Component {
         this.setState({ grid });
     }
 
+    randomizeStartFinishNodes() {
+        this.resetGrid();
+        var {grid, startNodeCoords, finishNodeCoords } = this.state;
+        
+        grid[startNodeCoords[0]][startNodeCoords[1]] = createNode(startNodeCoords[0], startNodeCoords[1], "default", Infinity);
+        grid[finishNodeCoords[0]][finishNodeCoords[1]] = createNode(finishNodeCoords[0], finishNodeCoords[1], "default", Infinity);
+        
+        startNodeCoords = [randomInteger(0, grid.length - 1), randomInteger(0, grid[0].length - 1)];
+        finishNodeCoords = [randomInteger(0, grid.length - 1), randomInteger(0, grid[0].length - 1)];
+
+        grid[startNodeCoords[0]][startNodeCoords[1]] = createNode(startNodeCoords[0], startNodeCoords[1], "startNode", 0);
+        grid[finishNodeCoords[0]][finishNodeCoords[1]] = createNode(finishNodeCoords[0], finishNodeCoords[1], "finishNode", Infinity);
+
+        this.setState({ grid, startNodeCoords, finishNodeCoords });
+    }
+
     render() {
-        const {grid} = this.state;
+        const {grid, startNodeCoords, finishNodeCoords} = this.state;
 
         return (
             <div>
                 <h1>Pathfinding Visualizer</h1>
-                <button onClick={() => this.visualizeDijkstra()}>Dijkstra's Algorithm</button>
-                <button onClick={()=> this.resetGrid()}>Reset</button>
-                <button onClick={()=> this.clearPath()}>Clear Path</button>
+                <button className="btn btn-outline-dark" onClick={() => visualizeDijkstra(grid, startNodeCoords, finishNodeCoords)}>Dijkstra's Algorithm</button>
+                <button className="btn btn-outline-dark" onClick={()=> this.resetGrid()}>Reset</button>
+                <button className="btn btn-outline-dark" onClick={()=> this.clearPath()}>Clear Path</button>
+                <button className="btn btn-outline-dark" onClick={()=> this.randomizeStartFinishNodes()}>Randomize Start and End Nodes</button>
                 <div className="grid">
                     {grid.map((row, rowIdx) => {
                         return (
@@ -153,7 +134,7 @@ const getInitialGrid = (state) => {
     for (let row = 0; row < nodesPerRow; row++) {
         const currentRow = [];
         for (let col = 0; col < nodesPerCol; col++) {
-            currentRow.push(createNode(row, col, "default", Infinity))
+            currentRow.push(createNode(row, col, "default", Infinity));
         }
         grid.push(currentRow);
     }
@@ -173,7 +154,6 @@ function createNode(row, col, type, distance) {
         type,
         distance,
         isVisited: false,
-        isWall: false,
         previousNode: null
     }
 }
@@ -183,8 +163,12 @@ function getWallUpdatedGrid(grid, row, col) {
     const node = newGrid[row][col];
     const newNode = {
         ...node,
-        type: node.type == "wallNode" ? "default" : node.type == "default" ? "wallNode" : node.type
+        type: node.type === "wallNode" ? "default" : node.type === "default" ? "wallNode" : node.type
     };
     newGrid[row][col] = newNode;
     return newGrid;
+}
+
+function randomInteger(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }

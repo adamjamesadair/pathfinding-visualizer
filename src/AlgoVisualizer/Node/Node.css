@@ -1,9 +1,10 @@
 .node {
   width: 25px;
   height: 25px;
-  margin: -2px 0px;
+  margin: -4px 0px;
   display: inline-block;
-  border: 1px solid black;
+  background-color: #3a6b7e;
+  border: 1px solid white;
 }
 
 .node:hover:not(.node-start):not(.node-finish) {
@@ -11,11 +12,11 @@
 }
 
 .node-start {
-  background-color: green;
+  background-color: #5cf64a;
 }
 
 .node-finish {
-  background-color: red;
+  background-color: #f6511d;
 }
 
 .node-wall {
@@ -23,9 +24,13 @@
 }
 
 .node-visited:not(.node-start):not(.node-finish) {
-  background-color: blue;
+  background-color: #2a9d8f;
 }
 
 .node-shortest-path:not(.node-start):not(.node-finish) {
+  background-color: #e9c46a;
+}
+
+.node-current {
   background-color: yellow;
 }

@@ -18,11 +18,11 @@ export default class Node extends Component {
             onMouseUp
         } = this.props;
 
-        const typeClass = type == "finishNode"
+        const typeClass = type === "finishNode"
             ? 'node-finish'
-            : type == "startNode"
+            : type === "startNode"
             ? 'node-start'
-            : type == "wallNode"
+            : type === "wallNode"
             ? 'node-wall'
             : '';
 
