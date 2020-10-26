@@ -3,6 +3,7 @@ import Node from './Node/Node';
 
 import {visualizeDijkstra} from '../Algorithms/dijkstra';
 import {visualizeAStar} from '../Algorithms/aStar';
+import {clearPath, createNode} from '../Algorithms/helpers';
 import './AlgoVisualizer.css';  
 
 export default class AlgoVisualizer extends Component {
@@ -36,22 +37,22 @@ export default class AlgoVisualizer extends Component {
         this.setState({ mouseIsPressed: false });
     }
     
-    clearPath() {
-        var {grid} = this.state;
+    // clearPath() {
+    //     var {grid} = this.state;
         
-        for(const row of grid) {
-            for(var node of row){
-                // update node values
-                var distance = node.type === "startNode" ? 0 : Infinity; 
-                grid[node.row][node.col] = createNode(node.row, node.col, node.type, distance);
-                // update css class
-                if(node.type === "default"){
-                    document.getElementById(`node-${node.row}-${node.col}`).className = 'node';
-                }
-            }
-        }
-        this.setState({ grid });
-    }
+    //     for(const row of grid) {
+    //         for(var node of row){
+    //             // update node values
+    //             var distance = node.type === "startNode" ? 0 : Infinity; 
+    //             grid[node.row][node.col] = createNode(node.row, node.col, node.type, distance);
+    //             // update css class
+    //             if(node.type === "default"){
+    //                 document.getElementById(`node-${node.row}-${node.col}`).className = 'node';
+    //             }
+    //         }
+    //     }
+    //     this.setState({ grid });
+    // }
 
     resetGrid(callback) {
         var {grid, startNodeCoords, finishNodeCoords} = this.state;
@@ -91,10 +92,10 @@ export default class AlgoVisualizer extends Component {
         return (
             <div>
                 <h1>Pathfinding Visualizer</h1>
-                <button className="btn btn-outline-dark" onClick={() => visualizeDijkstra(grid, startNodeCoords, finishNodeCoords)}>Dijkstra's Algorithm</button>
-                <button className="btn btn-outline-dark" onClick={() => visualizeAStar(grid, startNodeCoords, finishNodeCoords)}>A*</button>
+                <button className="btn btn-outline-dark" onClick={() => visualizeDijkstra(this, grid, startNodeCoords, finishNodeCoords)}>Dijkstra's Algorithm</button>
+                <button className="btn btn-outline-dark" onClick={() => visualizeAStar(this, grid, startNodeCoords, finishNodeCoords)}>A*</button>
                 <button className="btn btn-outline-dark" onClick={()=> this.resetGrid()}>Reset</button>
-                <button className="btn btn-outline-dark" onClick={()=> this.clearPath()}>Clear Path</button>
+                <button className="btn btn-outline-dark" onClick={()=> clearPath(this)}>Clear Path</button>
                 <button className="btn btn-outline-dark" onClick={()=> this.resetGrid(this.randomizeStartFinishNodes)}>Randomize Start and End Nodes</button>
                 <div className="grid">
                     {grid.map((row, rowIdx) => {
@@ -147,17 +148,6 @@ const getInitialGrid = (state) => {
     grid[finishRow][finishCol] = createNode(finishRow, finishCol, "finishNode", Infinity);
     return grid;
 };
-
-function createNode(row, col, type, distance) {
-    return {
-        row,
-        col,
-        type,
-        distance,
-        isVisited: false,
-        previousNode: null
-    }
-}
 
 function getWallUpdatedGrid(grid, row, col) {
     const newGrid = grid.slice();

@@ -1,4 +1,5 @@
-import { animateAlgorithm, sortNodesByDistance, getAllNodes, getUnvisitedNeighbors, getNodesInShortestPathOrder } from './helpers.js';
+import AlgoVisualizer from '../AlgoVisualizer/AlgoVisualizer.jsx';
+import { animateAlgorithm, sortNodesByDistance, getAllNodes, getUnvisitedNeighbors, getNodesInShortestPathOrder, clearPath } from './helpers.js';
 
 export function computeAStar(grid, startNodeCoords, finishNodeCoords) {
     const startNode = grid[startNodeCoords[0]][startNodeCoords[1]];
@@ -26,7 +27,8 @@ export function computeAStar(grid, startNodeCoords, finishNodeCoords) {
     }
 }
 
-export function visualizeAStar(grid, startNodeCoords, finishNodeCoords) {
+export function visualizeAStar(algoVisualizer, grid, startNodeCoords, finishNodeCoords) {
+  clearPath(algoVisualizer);
   const visitedNodesInOrder = computeAStar(grid, startNodeCoords, finishNodeCoords);
   const nodesInShortestPathOrder = getNodesInShortestPathOrder(grid[finishNodeCoords[0]][finishNodeCoords[1]]);
   animateAlgorithm(visitedNodesInOrder, nodesInShortestPathOrder);

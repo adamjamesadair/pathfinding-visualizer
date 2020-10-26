@@ -63,3 +63,31 @@ export function getNodesInShortestPathOrder(finishNode) {
 export function sortNodesByDistance(nodes) {
     nodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
 }
+
+export function clearPath(algoVisualizer) {
+        var {grid} = algoVisualizer.state;
+        
+        for(const row of grid) {
+            for(var node of row){
+                // update node values
+                var distance = node.type === "startNode" ? 0 : Infinity; 
+                grid[node.row][node.col] = createNode(node.row, node.col, node.type, distance);
+                // update css class
+                if(node.type === "default"){
+                    document.getElementById(`node-${node.row}-${node.col}`).className = 'node';
+                }
+            }
+        }
+        algoVisualizer.setState({ grid });
+    }
+
+export function createNode(row, col, type, distance) {
+    return {
+        row,
+        col,
+        type,
+        distance,
+        isVisited: false,
+        previousNode: null
+    }
+}

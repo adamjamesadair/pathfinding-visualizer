@@ -1,4 +1,4 @@
-import { animateAlgorithm, sortNodesByDistance, getAllNodes, getUnvisitedNeighbors, getNodesInShortestPathOrder } from './helpers.js';
+import { animateAlgorithm, sortNodesByDistance, getAllNodes, getUnvisitedNeighbors, getNodesInShortestPathOrder, clearPath } from './helpers.js';
 
 export function computeDijkstra(grid, startNodeCoords, finishNodeCoords) {
   const startNode = grid[startNodeCoords[0]][startNodeCoords[1]];
@@ -34,7 +34,8 @@ function updateUnvisitedNeighbors(node, grid) {
   }
 }
 
-export function visualizeDijkstra(grid, startNodeCoords, finishNodeCoords) {
+export function visualizeDijkstra(algoVisualiser, grid, startNodeCoords, finishNodeCoords) {
+  clearPath(algoVisualiser);
   const visitedNodesInOrder = computeDijkstra(grid, startNodeCoords, finishNodeCoords);
   const nodesInShortestPathOrder = getNodesInShortestPathOrder(grid[finishNodeCoords[0]][finishNodeCoords[1]]);
   animateAlgorithm(visitedNodesInOrder, nodesInShortestPathOrder);
