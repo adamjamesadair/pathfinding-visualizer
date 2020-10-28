@@ -1,4 +1,3 @@
-import AlgoVisualizer from '../AlgoVisualizer/AlgoVisualizer.jsx';
 import { animateAlgorithm, sortNodesByDistance, getAllNodes, getUnvisitedNeighbors, getNodesInShortestPathOrder, clearPath } from './helpers.js';
 
 export function computeAStar(grid, startNodeCoords, finishNodeCoords) {

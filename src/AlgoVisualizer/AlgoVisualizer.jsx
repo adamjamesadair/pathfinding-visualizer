@@ -3,6 +3,8 @@ import Node from './Node/Node';
 
 import {visualizeDijkstra} from '../Algorithms/dijkstra';
 import {visualizeAStar} from '../Algorithms/aStar';
+import {visualizeDFS} from '../Algorithms/dfs';
+import {visualizeBFS} from '../Algorithms/bfs';
 import {clearPath, createNode} from '../Algorithms/helpers';
 import './AlgoVisualizer.css';  
 
@@ -37,23 +39,6 @@ export default class AlgoVisualizer extends Component {
         this.setState({ mouseIsPressed: false });
     }
     
-    // clearPath() {
-    //     var {grid} = this.state;
-        
-    //     for(const row of grid) {
-    //         for(var node of row){
-    //             // update node values
-    //             var distance = node.type === "startNode" ? 0 : Infinity; 
-    //             grid[node.row][node.col] = createNode(node.row, node.col, node.type, distance);
-    //             // update css class
-    //             if(node.type === "default"){
-    //                 document.getElementById(`node-${node.row}-${node.col}`).className = 'node';
-    //             }
-    //         }
-    //     }
-    //     this.setState({ grid });
-    // }
-
     resetGrid(callback) {
         var {grid, startNodeCoords, finishNodeCoords} = this.state;
 
@@ -92,11 +77,18 @@ export default class AlgoVisualizer extends Component {
         return (
             <div>
                 <h1>Pathfinding Visualizer</h1>
-                <button className="btn btn-outline-dark" onClick={() => visualizeDijkstra(this, grid, startNodeCoords, finishNodeCoords)}>Dijkstra's Algorithm</button>
-                <button className="btn btn-outline-dark" onClick={() => visualizeAStar(this, grid, startNodeCoords, finishNodeCoords)}>A*</button>
-                <button className="btn btn-outline-dark" onClick={()=> this.resetGrid()}>Reset</button>
-                <button className="btn btn-outline-dark" onClick={()=> clearPath(this)}>Clear Path</button>
-                <button className="btn btn-outline-dark" onClick={()=> this.resetGrid(this.randomizeStartFinishNodes)}>Randomize Start and End Nodes</button>
+                <div className='menu'>
+                    <button className="btn btn-outline-dark" onClick={() => visualizeDijkstra(this, grid, startNodeCoords, finishNodeCoords)}>Dijkstra's Algorithm</button>
+                    <button className="btn btn-outline-dark" onClick={() => visualizeAStar(this, grid, startNodeCoords, finishNodeCoords)}>A*</button>
+                    <button className="btn btn-outline-dark" onClick={() => visualizeDFS(this, grid, startNodeCoords, finishNodeCoords)}>DFS</button>
+                    <button className="btn btn-outline-dark" onClick={() => visualizeBFS(this, grid, startNodeCoords, finishNodeCoords)}>BFS</button>
+                </div>
+                <div className='menu'>
+                    <button className="btn btn-outline-dark" onClick={()=> this.resetGrid()}>Reset</button>
+                    <button className="btn btn-outline-dark" onClick={()=> clearPath(this)}>Clear Path</button>
+                    <button className="btn btn-outline-dark" onClick={()=> this.resetGrid(this.randomizeStartFinishNodes)}>Randomize Start and End Nodes</button>
+                </div>
+
                 <div className="grid">
                     {grid.map((row, rowIdx) => {
                         return (
