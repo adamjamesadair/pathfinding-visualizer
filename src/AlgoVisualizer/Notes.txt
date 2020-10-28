@@ -1,6 +1,0 @@
-TODO
-
-Add different heuristics for A*? Allow diagonal movement?
-click and drag start/end nodes?
-Erase walls with right click?
-Fix dragging bug with image beign dragged
