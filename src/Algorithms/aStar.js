@@ -27,18 +27,19 @@ export function computeAStar(grid, startNodeCoords, finishNodeCoords) {
 }
 
 export function visualizeAStar(algoVisualizer, grid, startNodeCoords, finishNodeCoords) {
-  clearPath(algoVisualizer);
-  const visitedNodesInOrder = computeAStar(grid, startNodeCoords, finishNodeCoords);
-  const nodesInShortestPathOrder = getNodesInShortestPathOrder(grid[finishNodeCoords[0]][finishNodeCoords[1]]);
-  animateAlgorithm(visitedNodesInOrder, nodesInShortestPathOrder);
+    algoVisualizer.setState({running: true});
+    clearPath(algoVisualizer);
+    const visitedNodesInOrder = computeAStar(grid, startNodeCoords, finishNodeCoords);
+    const nodesInShortestPathOrder = getNodesInShortestPathOrder(grid[finishNodeCoords[0]][finishNodeCoords[1]]);
+    animateAlgorithm(algoVisualizer, visitedNodesInOrder, nodesInShortestPathOrder);
 }
 
 function updateUnvisitedNeighbors(node, grid, finishNode) {
-  const unvisitedNeighbors = getUnvisitedNeighbors(node, grid);
-  for (const neighbor of unvisitedNeighbors) {
-    // Manhattan distance heuristic
-    var manhattanDistance = Math.abs(neighbor.row - finishNode.row) + Math.abs(neighbor.col - finishNode.col);
-    neighbor.distance = manhattanDistance;
-    neighbor.previousNode = node;
-  }
+    const unvisitedNeighbors = getUnvisitedNeighbors(node, grid);
+    for (const neighbor of unvisitedNeighbors) {
+        // Manhattan distance heuristic
+        var manhattanDistance = Math.abs(neighbor.row - finishNode.row) + Math.abs(neighbor.col - finishNode.col);
+        neighbor.distance = manhattanDistance;
+        neighbor.previousNode = node;
+    }
 }

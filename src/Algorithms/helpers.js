@@ -1,8 +1,8 @@
-export function animateAlgorithm(visitedNodesInOrder, nodesInShortestPathOrder) {
+export function animateAlgorithm(algoVisualizer, visitedNodesInOrder, nodesInShortestPathOrder) {
   for (let i = 0; i <= visitedNodesInOrder.length; i++) {
       if (i === visitedNodesInOrder.length) {
           setTimeout(() => {
-              animateShortestPath(nodesInShortestPathOrder);
+              animateShortestPath(algoVisualizer, nodesInShortestPathOrder);
           }, 10 * i);
           return;
       }
@@ -18,7 +18,7 @@ export function animateAlgorithm(visitedNodesInOrder, nodesInShortestPathOrder) 
   }
 }
 
-function animateShortestPath(nodesInShortestPathOrder) {
+function animateShortestPath(algoVisualizer, nodesInShortestPathOrder) {
   for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
       setTimeout(() => {
           const node = nodesInShortestPathOrder[i];
@@ -26,6 +26,7 @@ function animateShortestPath(nodesInShortestPathOrder) {
           document.getElementById(`node-${node.row}-${node.col}`).className + ' node-shortest-path';
       }, 50 * i);
   }
+  setTimeout(()=>{algoVisualizer.setState({running: false});}, 50 * nodesInShortestPathOrder.length);
 }
 
 export function getAllNodes(grid) {

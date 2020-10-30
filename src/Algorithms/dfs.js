@@ -15,10 +15,11 @@ function computeDFS(grid, currentNode, finishNode, visitedNodes) {
 }
 
 export function visualizeDFS(algoVisualizer, grid, startNodeCoords, finishNodeCoords) {
-  clearPath(algoVisualizer);
-  const startNode = grid[startNodeCoords[0]][startNodeCoords[1]];
-  const finishNode = grid[finishNodeCoords[0]][finishNodeCoords[1]];
-  const visitedNodesInOrder = computeDFS(grid, startNode, finishNode, []);
-  const nodesInShortestPathOrder = getNodesInShortestPathOrder(grid[finishNodeCoords[0]][finishNodeCoords[1]]);
-  animateAlgorithm(visitedNodesInOrder, nodesInShortestPathOrder);
+    algoVisualizer.setState({running: true});
+    clearPath(algoVisualizer);
+    const startNode = grid[startNodeCoords[0]][startNodeCoords[1]];
+    const finishNode = grid[finishNodeCoords[0]][finishNodeCoords[1]];
+    const visitedNodesInOrder = computeDFS(grid, startNode, finishNode, []);
+    const nodesInShortestPathOrder = getNodesInShortestPathOrder(grid[finishNodeCoords[0]][finishNodeCoords[1]]);
+    animateAlgorithm(algoVisualizer, visitedNodesInOrder, nodesInShortestPathOrder);
 }

@@ -34,11 +34,12 @@ function updateUnvisitedNeighbors(node, grid) {
   }
 }
 
-export function visualizeDijkstra(algoVisualiser, grid, startNodeCoords, finishNodeCoords) {
-  clearPath(algoVisualiser);
+export function visualizeDijkstra(algoVisualizer, grid, startNodeCoords, finishNodeCoords) {
+  algoVisualizer.setState({running: true});
+  clearPath(algoVisualizer);
   const visitedNodesInOrder = computeDijkstra(grid, startNodeCoords, finishNodeCoords);
   const nodesInShortestPathOrder = getNodesInShortestPathOrder(grid[finishNodeCoords[0]][finishNodeCoords[1]]);
-  animateAlgorithm(visitedNodesInOrder, nodesInShortestPathOrder);
+  animateAlgorithm(algoVisualizer, visitedNodesInOrder, nodesInShortestPathOrder);
 }
 
 
