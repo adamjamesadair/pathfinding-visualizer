@@ -1,6 +1,7 @@
 export function animateAlgorithm(algoVisualizer, visitedNodesInOrder, nodesInShortestPathOrder) {
   for (let i = 0; i <= visitedNodesInOrder.length; i++) {
       if (i === visitedNodesInOrder.length) {
+          // Animate the shortest path
           setTimeout(() => {
               animateShortestPath(algoVisualizer, nodesInShortestPathOrder);
           }, 10 * i);
@@ -10,7 +11,9 @@ export function animateAlgorithm(algoVisualizer, visitedNodesInOrder, nodesInSho
       setTimeout(() => {
           const node = visitedNodesInOrder[i];
           var oldClasses = document.getElementById(`node-${node.row}-${node.col}`).className
+          // Animate the current node
           document.getElementById(`node-${node.row}-${node.col}`).className = oldClasses + ' node-current';
+          // Animate the visted nodes
           setTimeout(()=>{
               document.getElementById(`node-${node.row}-${node.col}`).className = oldClasses + ' node-visited';
           }, 10);
@@ -27,6 +30,27 @@ function animateShortestPath(algoVisualizer, nodesInShortestPathOrder) {
       }, 50 * i);
   }
   setTimeout(()=>{algoVisualizer.setState({running: false});}, 50 * nodesInShortestPathOrder.length);
+}
+
+export function animateGeneration(algoVisualizer, generatedWallsInOrder, callback=null) {
+    const { grid } = algoVisualizer.state;
+    const delay = 10;
+    for (let i = 0; i < generatedWallsInOrder.length; i++) {
+        setTimeout(() => {
+            const node = generatedWallsInOrder[i];
+            var oldClasses = document.getElementById(`node-${node.row}-${node.col}`).className
+            // Animate the current node
+            document.getElementById(`node-${node.row}-${node.col}`).className = oldClasses + ' node-current';
+            // Animate the visted nodes
+            setTimeout(()=>{
+                document.getElementById(`node-${node.row}-${node.col}`).className = oldClasses + ' node-wall';
+            }, delay);
+        }, delay * i);
+    }
+    setTimeout(()=>{
+        algoVisualizer.setState({running: false});
+        if(callback) callback(algoVisualizer, grid, generatedWallsInOrder);
+    }, delay * generatedWallsInOrder.length);
 }
 
 export function getAllNodes(grid) {
@@ -92,3 +116,45 @@ export function createNode(row, col, type, distance) {
         previousNode: null
     }
 }
+
+export function randomInteger(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+export function resetGrid(algoVisualizer, callback) {
+    var {grid, startNodeCoords, finishNodeCoords} = algoVisualizer.state;
+
+    // reset node classnames
+    for (const row of grid) {
+        for (const node of row) {
+            document.getElementById(`node-${node.row}-${node.col}`).className = 'node';
+        }
+    }
+
+    // set start and finish node classnames
+    document.getElementById(`node-${startNodeCoords[0]}-${startNodeCoords[1]}`).className = 'node node-start';
+    document.getElementById(`node-${finishNodeCoords[0]}-${finishNodeCoords[1]}`).className = 'node node-finish';
+    grid = getInitialGrid(algoVisualizer);
+    algoVisualizer.setState({ grid }, callback);
+}
+
+export function getInitialGrid(algoVisualizer){
+    // Generate the empty grid
+    const grid = [];
+    const nodesPerRow = 20;
+    const nodesPerCol = 50;
+    for (let row = 0; row < nodesPerRow; row++) {
+        const currentRow = [];
+        for (let col = 0; col < nodesPerCol; col++) {
+            currentRow.push(createNode(row, col, "default", Infinity));
+        }
+        grid.push(currentRow);
+    }
+
+    // Set the start and finish nodes
+    const [startRow, startCol] = algoVisualizer.state.startNodeCoords;
+    const [finishRow, finishCol] = algoVisualizer.state.finishNodeCoords;
+    grid[startRow][startCol] = createNode(startRow, startCol, "startNode", 0);
+    grid[finishRow][finishCol] = createNode(finishRow, finishCol, "finishNode", Infinity);
+    return grid;
+};

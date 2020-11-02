@@ -1,4 +1,4 @@
-import { animateAlgorithm, getUnvisitedNeighbors, getNodesInShortestPathOrder, clearPath } from './helpers.js';
+import { animateAlgorithm, getUnvisitedNeighbors, getNodesInShortestPathOrder, clearPath } from '../helpers.js';
 
 function computeDFS(grid, currentNode, finishNode, visitedNodes) {
     visitedNodes.push(currentNode);

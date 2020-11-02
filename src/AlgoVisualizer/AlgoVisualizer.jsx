@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
 import Node from './Node/Node';
 
-import {visualizeDijkstra} from '../Algorithms/dijkstra';
-import {visualizeAStar} from '../Algorithms/aStar';
-import {visualizeDFS} from '../Algorithms/dfs';
-import {visualizeBFS} from '../Algorithms/bfs';
-import {clearPath, createNode} from '../Algorithms/helpers';
+import {visualizeDijkstra} from '../Algorithms/Search/dijkstra';
+import {visualizeAStar} from '../Algorithms/Search/aStar';
+import {visualizeDFS} from '../Algorithms/Search/dfs';
+import {visualizeBFS} from '../Algorithms/Search/bfs';
+import {getInitialGrid, resetGrid, clearPath, createNode, randomInteger} from '../Algorithms/helpers';
 import './AlgoVisualizer.css';  
+import { visualizeRecursiveDivision } from '../Algorithms/Generator/recursiveDivision';
 
 export default class AlgoVisualizer extends Component {
     constructor(props) {
@@ -21,7 +22,7 @@ export default class AlgoVisualizer extends Component {
     }
 
     componentDidMount(){
-        const grid = getInitialGrid(this.state);
+        const grid = getInitialGrid(this);
         this.setState({grid});
     }
 
@@ -42,23 +43,6 @@ export default class AlgoVisualizer extends Component {
     
     handleMouseUp() {
         this.setState({ mouseIsPressed: false });
-    }
-    
-    resetGrid(callback) {
-        var {grid, startNodeCoords, finishNodeCoords} = this.state;
-
-        // reset node classnames
-        for (const row of grid) {
-            for (const node of row) {
-                document.getElementById(`node-${node.row}-${node.col}`).className = 'node';
-            }
-        }
-
-        // set start and finish node classnames
-        document.getElementById(`node-${startNodeCoords[0]}-${startNodeCoords[1]}`).className = 'node node-start';
-        document.getElementById(`node-${finishNodeCoords[0]}-${finishNodeCoords[1]}`).className = 'node node-finish';
-        grid = getInitialGrid(this.state);
-        this.setState({ grid }, callback);
     }
 
     randomizeStartFinishNodes() {
@@ -87,11 +71,12 @@ export default class AlgoVisualizer extends Component {
                     <button className="btn btn-outline-dark" disabled={this.state.running} onClick={() => visualizeAStar(this, grid, startNodeCoords, finishNodeCoords)}>A*</button>
                     <button className="btn btn-outline-dark" disabled={this.state.running} onClick={() => visualizeDFS(this, grid, startNodeCoords, finishNodeCoords)}>DFS</button>
                     <button className="btn btn-outline-dark" disabled={this.state.running} onClick={() => visualizeBFS(this, grid, startNodeCoords, finishNodeCoords)}>BFS</button>
+                    <button className="btn btn-outline-dark" disabled={this.state.running} onClick={() => visualizeRecursiveDivision(this, grid, startNodeCoords, finishNodeCoords)}>Recursive Division</button>
                 </div>
                 <div className='menu'>
-                    <button className="btn btn-outline-dark" disabled={this.state.running} onClick={()=> this.resetGrid()}>Reset</button>
+                    <button className="btn btn-outline-dark" disabled={this.state.running} onClick={()=> resetGrid(this)}>Reset</button>
                     <button className="btn btn-outline-dark" disabled={this.state.running} onClick={()=> clearPath(this)}>Clear Path</button>
-                    <button className="btn btn-outline-dark" disabled={this.state.running} onClick={()=> this.resetGrid(this.randomizeStartFinishNodes)}>Randomize Start and End Nodes</button>
+                    <button className="btn btn-outline-dark" disabled={this.state.running} onClick={()=> resetGrid(this, this.randomizeStartFinishNodes)}>Randomize Start and End Nodes</button>
                 </div>
 
                 <div className="grid">
@@ -125,27 +110,6 @@ export default class AlgoVisualizer extends Component {
     }
 }
 
-const getInitialGrid = (state) => {
-    // Generate the empty grid
-    const grid = [];
-    const nodesPerRow = 20;
-    const nodesPerCol = 50;
-    for (let row = 0; row < nodesPerRow; row++) {
-        const currentRow = [];
-        for (let col = 0; col < nodesPerCol; col++) {
-            currentRow.push(createNode(row, col, "default", Infinity));
-        }
-        grid.push(currentRow);
-    }
-
-    // Set the start and finish nodes
-    const [startRow, startCol] = state.startNodeCoords;
-    const [finishRow, finishCol] = state.finishNodeCoords;
-    grid[startRow][startCol] = createNode(startRow, startCol, "startNode", 0);
-    grid[finishRow][finishCol] = createNode(finishRow, finishCol, "finishNode", Infinity);
-    return grid;
-};
-
 function getWallUpdatedGrid(grid, row, col) {
     const newGrid = grid.slice();
     const node = newGrid[row][col];
@@ -155,8 +119,4 @@ function getWallUpdatedGrid(grid, row, col) {
     };
     newGrid[row][col] = newNode;
     return newGrid;
-}
-
-function randomInteger(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
