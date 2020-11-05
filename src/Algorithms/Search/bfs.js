@@ -10,16 +10,21 @@ function computeBFS(grid, startNode, finishNode) {
     while(queue){
         startNode = queue.shift();
 
-        for(var neighbor of getUnvisitedNeighbors(startNode, grid).filter(neighbor => neighbor.type !== "wallNode")){
-            if(!path.includes(neighbor)){
-                neighbor.previousNode = startNode;
-                neighbor.isVisited = true;
-                path.push(neighbor);
-                queue.push(neighbor);
-
-                if(neighbor === finishNode) return path;
+        if(startNode){
+            for(var neighbor of getUnvisitedNeighbors(startNode, grid).filter(neighbor => neighbor.type !== "wallNode")){
+                if(!path.includes(neighbor)){
+                    neighbor.previousNode = startNode;
+                    neighbor.isVisited = true;
+                    path.push(neighbor);
+                    queue.push(neighbor);
+    
+                    if(neighbor === finishNode) return path;
+                }
             }
+        } else {
+            return path;
         }
+
     }
     return path;
 }
