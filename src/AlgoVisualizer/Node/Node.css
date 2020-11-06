@@ -7,7 +7,7 @@
   border: 1px solid white;
 }
 
-.node:hover:not(.node-start):not(.node-finish) {
+.node:hover:not(.node-start):not(.node-finish):not(.node-wall) {
   background-color: lightblue;
 }
 
@@ -17,6 +17,49 @@
 
 .node-finish {
   background-color: #f6511d;
+}
+
+@keyframes walls {
+  0% {
+    background-color: #dd2b0b;
+    width: 100%;
+    height: 100%;
+  }
+  100% {
+    background-color: #851906;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+@keyframes visited {
+  0% {
+    background-color: #2d9755;
+    width: 100%;
+    height: 100%;
+  }
+  100% {
+    background-color: #286b01;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.node-visited .node-center {
+  margin: auto;
+  width: 0%;
+  height: 0%;
+  animation-name: visited;
+  animation-duration: 0.25s;
+}
+
+.node-wall .node-center {
+  margin: auto;
+  background-color: rgba(255, 0, 0, 0.589);
+  width: 0%;
+  height: 0%;
+  animation-name: walls;
+  animation-duration: 0.25s;
 }
 
 .node-wall {
