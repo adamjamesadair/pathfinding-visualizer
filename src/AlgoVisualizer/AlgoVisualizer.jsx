@@ -51,13 +51,27 @@ export default class AlgoVisualizer extends Component {
         grid[startNodeCoords[0]][startNodeCoords[1]] = createNode(startNodeCoords[0], startNodeCoords[1], "default", Infinity);
         grid[finishNodeCoords[0]][finishNodeCoords[1]] = createNode(finishNodeCoords[0], finishNodeCoords[1], "default", Infinity);
         
-        startNodeCoords = [randomInteger(0, grid.length - 1), randomInteger(0, grid[0].length - 1)];
-        finishNodeCoords = [randomInteger(0, grid.length - 1), randomInteger(0, grid[0].length - 1)];
-        
-        grid[startNodeCoords[0]][startNodeCoords[1]] = createNode(startNodeCoords[0], startNodeCoords[1], "startNode", 0);
-        grid[finishNodeCoords[0]][finishNodeCoords[1]] = createNode(finishNodeCoords[0], finishNodeCoords[1], "finishNode", Infinity);
-        
-        this.setState({ grid, startNodeCoords, finishNodeCoords });
+        var emptyNodes = [];
+        // Get all empty nodes
+        for(var row of grid){
+            var newRow = row.filter(node => node.type === "default");
+            if(newRow.length > 0) emptyNodes.push(newRow);
+        }
+
+        if(emptyNodes.length > 0) {
+            var startNodeRow = randomInteger(0, emptyNodes.length - 1);
+            var startNode = emptyNodes[startNodeRow][randomInteger(0, emptyNodes[startNodeRow].length - 1)];
+            var finishNodeRow = randomInteger(0, emptyNodes.length - 1);
+            var finishNode = emptyNodes[finishNodeRow][randomInteger(0, emptyNodes[finishNodeRow].length - 1)];
+    
+            startNodeCoords = [startNode.row, startNode.col];
+            finishNodeCoords = [finishNode.row, finishNode.col];
+            
+            grid[startNodeCoords[0]][startNodeCoords[1]] = createNode(startNodeCoords[0], startNodeCoords[1], "startNode", 0);
+            grid[finishNodeCoords[0]][finishNodeCoords[1]] = createNode(finishNodeCoords[0], finishNodeCoords[1], "finishNode", Infinity);
+            
+            this.setState({ grid, startNodeCoords, finishNodeCoords });
+        }
     }
 
     render() {
@@ -74,9 +88,9 @@ export default class AlgoVisualizer extends Component {
                     <button className="btn btn-outline-dark" disabled={this.state.running} onClick={() => visualizeRecursiveDivision(this, grid, startNodeCoords, finishNodeCoords)}>Recursive Division</button>
                 </div>
                 <div className='menu'>
-                    <button className="btn btn-outline-dark" disabled={this.state.running} onClick={()=> resetGrid(this)}>Reset</button>
+                    <button className="btn btn-outline-dark" disabled={this.state.running} onClick={()=> resetGrid(this)}>Clear Walls</button>
                     <button className="btn btn-outline-dark" disabled={this.state.running} onClick={()=> clearPath(this)}>Clear Path</button>
-                    <button className="btn btn-outline-dark" disabled={this.state.running} onClick={()=> resetGrid(this, this.randomizeStartFinishNodes)}>Randomize Start and End Nodes</button>
+                    <button className="btn btn-outline-dark" disabled={this.state.running} onClick={()=> clearPath(this, this.randomizeStartFinishNodes)}>Randomize Start and End Nodes</button>
                 </div>
 
                 <div className="grid">

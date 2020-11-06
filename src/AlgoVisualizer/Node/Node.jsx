@@ -13,6 +13,7 @@ export default class Node extends Component {
             row,
             col,
             type,
+            distance,
             onMouseDown,
             onMouseEnter,
             onMouseUp
@@ -32,7 +33,7 @@ export default class Node extends Component {
                 className = {`node ${typeClass}`}
                 onMouseDown={() => onMouseDown(row, col)}
                 onMouseEnter={() => onMouseEnter(row, col)}
-                onMouseUp={() => onMouseUp()}>
+                onMouseUp={() => onMouseUp()}><div className='node-center'></div>
             </div>
         );
     }
