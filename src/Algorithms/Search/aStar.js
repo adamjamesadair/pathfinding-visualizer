@@ -1,4 +1,4 @@
-import { animateAlgorithm, sortNodesByDistance, getAllNodes, getUnvisitedNeighbors, getNodesInShortestPathOrder, clearPath } from '../helpers.js';
+import { animateAlgorithm, sortNodesByDistance, getAllNodes, getUnvisitedNeighbors, getNodesInShortestPathOrder, clearPath, getEuclideanDistance } from '../helpers.js';
 
 export function computeAStar(grid, startNodeCoords, finishNodeCoords) {
     const startNode = grid[startNodeCoords[0]][startNodeCoords[1]];
@@ -12,7 +12,6 @@ export function computeAStar(grid, startNodeCoords, finishNodeCoords) {
         sortNodesByDistance(unvisitedNodes);
         // Get the closest unvisited node
         var closestNode = unvisitedNodes.shift();
-        // unvisitedNodes.unshift();
         // Skip if the closest node is a wall
         if(closestNode.type === "wallNode") continue;
         // Return if there are no possible routes
@@ -22,7 +21,7 @@ export function computeAStar(grid, startNodeCoords, finishNodeCoords) {
 
         // Check if the current node is the finish node
         if(closestNode === finishNode) return visitedNodes;
-        updateUnvisitedNeighbors(closestNode, grid, finishNode);
+        updateUnvisitedNeighbors(closestNode, grid, finishNode, "manhattan");
     }
 }
 
@@ -34,12 +33,24 @@ export function visualizeAStar(algoVisualizer, grid, startNodeCoords, finishNode
     animateAlgorithm(algoVisualizer, visitedNodesInOrder, nodesInShortestPathOrder);
 }
 
-function updateUnvisitedNeighbors(node, grid, finishNode) {
+function updateUnvisitedNeighbors(node, grid, finishNode, heuristic="manhattan") {
     const unvisitedNeighbors = getUnvisitedNeighbors(node, grid);
     for (const neighbor of unvisitedNeighbors) {
-        // Manhattan distance heuristic
-        var manhattanDistance = Math.abs(neighbor.row - finishNode.row) + Math.abs(neighbor.col - finishNode.col);
-        neighbor.distance = manhattanDistance;
+        if(heuristic === "manhattan"){
+            // Manhattan distance heuristic
+            var neighborDistance = Math.abs(neighbor.row - finishNode.row) + Math.abs(neighbor.col - finishNode.col);
+            var nodeDistance = Math.abs(node.row - finishNode.row) + Math.abs(node.col - finishNode.col);
+        } else if(heuristic === "euclidean") {
+            // Euclidean distance 
+            var neighborDistance = getEuclideanDistance(neighbor.row, neighbor.col, finishNode.row, finishNode.col);
+            var nodeDistance = getEuclideanDistance(node.row, node.col, finishNode.row, finishNode.col);
+        }
+        
+        if(node.distance === 0){
+            neighbor.distance = 1 + neighborDistance; 
+        } else {
+            neighbor.distance = node.distance - nodeDistance + 1 + neighborDistance;
+        }
         neighbor.previousNode = node;
     }
 }
