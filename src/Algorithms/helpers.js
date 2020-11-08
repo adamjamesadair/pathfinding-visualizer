@@ -91,6 +91,27 @@ export function sortNodesByDistance(nodes) {
     nodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
 }
 
+export function sortNodesByDistanceAndHeuristic(nodes){
+    nodes.sort(function (nodeA, nodeB) {
+        // Sort on distance
+        if(nodeA.distance > nodeB.distance) {
+            return 1;
+        } else if (nodeA.distance < nodeB.distance) {
+            return -1;
+        } else {
+            // If the distances are the same,
+            // sort on distance - heuristic
+            if(nodeA.heuristic > nodeB.heuristic) {
+                return 1;
+            } else if (nodeA.heuristic < nodeB.heuristic) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
+    });
+}
+
 export function clearPath(algoVisualizer, callback=null) {
     var {grid} = algoVisualizer.state;
     
@@ -114,6 +135,7 @@ export function createNode(row, col, type, distance) {
         col,
         type,
         distance,
+        heuristic: 0,
         isVisited: false,
         previousNode: null
     }
