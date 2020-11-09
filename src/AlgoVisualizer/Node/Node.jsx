@@ -13,8 +13,8 @@ export default class Node extends Component {
             row,
             col,
             type,
-            distance,
             onMouseDown,
+            distance,
             onMouseEnter,
             onMouseUp
         } = this.props;

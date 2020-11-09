@@ -1,4 +1,4 @@
-import { animateAlgorithm, sortNodesByDistanceAndHeuristic, getAllNodes, getUnvisitedNeighbors, getNodesInShortestPathOrder, clearPath, getEuclideanDistance } from '../helpers.js';
+import { animateAlgorithm, sortNodesByDistanceAndHeuristic, getAllNodes, getNeighbors, getNodesInShortestPathOrder, clearPath, getEuclideanDistance } from '../helpers.js';
 
 export function computeAStar(grid, startNodeCoords, finishNodeCoords) {
     const startNode = grid[startNodeCoords[0]][startNodeCoords[1]];
@@ -22,7 +22,7 @@ export function computeAStar(grid, startNodeCoords, finishNodeCoords) {
 
         // Check if the current node is the finish node
         if(closestNode === finishNode) return visitedNodes;
-        updateUnvisitedNeighbors(closestNode, grid);
+        updateneighbors(closestNode, grid);
     }
 }
 
@@ -34,16 +34,22 @@ export function visualizeAStar(algoVisualizer, grid, startNodeCoords, finishNode
     animateAlgorithm(algoVisualizer, visitedNodesInOrder, nodesInShortestPathOrder);
 }
 
-function updateUnvisitedNeighbors(node, grid) {
-    const unvisitedNeighbors = getUnvisitedNeighbors(node, grid);
+function updateneighbors(node, grid) {
+    const neighbors = getNeighbors(node, grid);
     const weight = 1;
-    for (const neighbor of unvisitedNeighbors) {
-        if(node.distance === 0){
-            neighbor.distance = weight + neighbor.heuristic; 
+    for (const neighbor of neighbors) {
+        if(neighbor.isVisited){
+            if(neighbor.distance - neighbor.heuristic < node.previousNode.distance - node.previousNode.heuristic){
+                node.previousNode = neighbor;
+            }
         } else {
-            neighbor.distance = node.distance - node.heuristic + weight + neighbor.heuristic;
+            if(node.distance === 0){
+                neighbor.distance = weight + neighbor.heuristic; 
+            } else {
+                neighbor.distance = node.distance - node.heuristic + weight + neighbor.heuristic;
+            }
+            neighbor.previousNode = node;
         }
-        neighbor.previousNode = node;
     }
 }
 
