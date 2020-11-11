@@ -22,4 +22,5 @@ export function visualizeDFS(algoVisualizer, grid, startNodeCoords, finishNodeCo
     const visitedNodesInOrder = computeDFS(grid, startNode, finishNode, [])[1];
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(grid[finishNodeCoords[0]][finishNodeCoords[1]]);
     if(visitedNodesInOrder) animateAlgorithm(algoVisualizer, visitedNodesInOrder, nodesInShortestPathOrder); else algoVisualizer.setState({running: false});
+    algoVisualizer.setState({isPathDrawn: true});
 }

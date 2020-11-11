@@ -14,9 +14,9 @@ export default class Node extends Component {
             col,
             type,
             onMouseDown,
-            distance,
             onMouseEnter,
-            onMouseUp
+            onMouseUp,
+            onMouseLeave
         } = this.props;
 
         const typeClass = type === "finishNode"
@@ -33,7 +33,8 @@ export default class Node extends Component {
                 className = {`node ${typeClass}`}
                 onMouseDown={() => onMouseDown(row, col)}
                 onMouseEnter={() => onMouseEnter(row, col)}
-                onMouseUp={() => onMouseUp()}><div className='node-center'></div>
+                onMouseLeave={() => onMouseLeave(row, col)}
+                onMouseUp={() => onMouseUp(row, col)}><div className='node-center'></div>
             </div>
         );
     }

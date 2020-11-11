@@ -138,7 +138,7 @@ export function clearPath(algoVisualizer, callback=null) {
             }
         }
     }
-    algoVisualizer.setState({ grid }, callback);
+    algoVisualizer.setState({ grid, isPathDrawn: false }, callback);
 }
 
 export function createNode(row, col, type, distance) {
@@ -209,4 +209,20 @@ export function getEuclideanDistance(x1, y1, x2, y2){
     var a = x1 - x2;
     var b = y1 - y2;
     return Math.sqrt( a*a + b*b );
+}
+
+export function getRandomEmptyNodeCoords(algoVisualizer){
+    var {grid} = algoVisualizer.state;
+    var emptyNodes = [];
+    // Get all empty nodes
+    for(var row of grid){
+        var newRow = row.filter(node => node.type === "default");
+        if(newRow.length > 0) emptyNodes.push(newRow);
+    }
+
+    if(emptyNodes.length > 0) {
+        var nodeRow = randomInteger(0, emptyNodes.length - 1);
+        var node = emptyNodes[nodeRow][randomInteger(0, emptyNodes[nodeRow].length - 1)];
+        return [node.row, node.col];
+    }
 }

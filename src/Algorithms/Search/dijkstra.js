@@ -40,6 +40,7 @@ export function visualizeDijkstra(algoVisualizer, grid, startNodeCoords, finishN
   const visitedNodesInOrder = computeDijkstra(grid, startNodeCoords, finishNodeCoords);
   const nodesInShortestPathOrder = getNodesInShortestPathOrder(grid[finishNodeCoords[0]][finishNodeCoords[1]]);
   animateAlgorithm(algoVisualizer, visitedNodesInOrder, nodesInShortestPathOrder);
+  algoVisualizer.setState({isPathDrawn: true});
 }
 
 

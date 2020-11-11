@@ -30,11 +30,12 @@ function computeBFS(grid, startNode, finishNode) {
 }
 
 export function visualizeBFS(algoVisualizer, grid, startNodeCoords, finishNodeCoords) {
-    algoVisualizer.setState({running: true});
+    algoVisualizer.setState({running: true, isPathDrawn: true});
     clearPath(algoVisualizer);
     const startNode = grid[startNodeCoords[0]][startNodeCoords[1]];
     const finishNode = grid[finishNodeCoords[0]][finishNodeCoords[1]];
     const visitedNodesInOrder = computeBFS(grid, startNode, finishNode);
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(grid[finishNodeCoords[0]][finishNodeCoords[1]]);
     animateAlgorithm(algoVisualizer, visitedNodesInOrder, nodesInShortestPathOrder);
+    algoVisualizer.setState({isPathDrawn: true});
 }

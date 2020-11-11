@@ -27,11 +27,12 @@ export function computeAStar(grid, startNodeCoords, finishNodeCoords) {
 }
 
 export function visualizeAStar(algoVisualizer, grid, startNodeCoords, finishNodeCoords) {
-    algoVisualizer.setState({running: true});
+    algoVisualizer.setState({running: true, isPathDrawn: true});
     clearPath(algoVisualizer);
     const visitedNodesInOrder = computeAStar(grid, startNodeCoords, finishNodeCoords);
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(grid[finishNodeCoords[0]][finishNodeCoords[1]]);
     animateAlgorithm(algoVisualizer, visitedNodesInOrder, nodesInShortestPathOrder);
+    algoVisualizer.setState({isPathDrawn: true});
 }
 
 function updateneighbors(node, grid) {
