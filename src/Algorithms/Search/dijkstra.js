@@ -37,10 +37,12 @@ function updateUnvisitedNeighbors(node, grid) {
 export function visualizeDijkstra(algoVisualizer, grid, startNodeCoords, finishNodeCoords) {
   algoVisualizer.setState({running: true});
   clearPath(algoVisualizer);
+  var startTime = new Date().getTime();
   const visitedNodesInOrder = computeDijkstra(grid, startNodeCoords, finishNodeCoords);
   const nodesInShortestPathOrder = getNodesInShortestPathOrder(grid[finishNodeCoords[0]][finishNodeCoords[1]]);
+  var runTimeSeconds = new Date().getTime() - startTime;
   animateAlgorithm(algoVisualizer, visitedNodesInOrder, nodesInShortestPathOrder);
-  algoVisualizer.setState({isPathDrawn: true});
+  algoVisualizer.setState({ isPathDrawn: true, runTimeSeconds, lastAlgoRunString: "Dijkstra" });
 }
 
 

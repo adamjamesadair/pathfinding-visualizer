@@ -1,5 +1,6 @@
 export function animateAlgorithm(algoVisualizer, visitedNodesInOrder, nodesInShortestPathOrder) {
     const delay = 10;
+    algoVisualizer.setState({ numVisitedNodes: visitedNodesInOrder.length });
     for (let i = 0; i <= visitedNodesInOrder.length; i++) {
         if (i === visitedNodesInOrder.length) {
             // Animate the shortest path
@@ -20,10 +21,12 @@ export function animateAlgorithm(algoVisualizer, visitedNodesInOrder, nodesInSho
             }, delay);
         }, delay * i);
     }
+    
 }
 
 function animateShortestPath(algoVisualizer, nodesInShortestPathOrder) {
     const delay = 25;
+    algoVisualizer.setState({ numNodesInPath: nodesInShortestPathOrder.length });
     for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
         setTimeout(() => {
             const node = nodesInShortestPathOrder[i];
@@ -43,7 +46,7 @@ export function animateGeneration(algoVisualizer, generatedWallsInOrder, callbac
             var oldClasses = document.getElementById(`node-${node.row}-${node.col}`).className
             // Animate the current node
             document.getElementById(`node-${node.row}-${node.col}`).className = oldClasses + ' node-current';
-            // Animate the visted nodes
+            // Animate the walls
             setTimeout(()=>{
                 document.getElementById(`node-${node.row}-${node.col}`).className = oldClasses + ' node-wall';
             }, delay);
@@ -138,7 +141,7 @@ export function clearPath(algoVisualizer, callback=null) {
             }
         }
     }
-    algoVisualizer.setState({ grid, isPathDrawn: false }, callback);
+    algoVisualizer.setState({ grid, isPathDrawn: false, numNodesInPath: 0, numVisitedNodes: 0 }, callback);
 }
 
 export function createNode(row, col, type, distance) {
@@ -181,7 +184,7 @@ export function resetGrid(algoVisualizer, callback) {
     document.getElementById(`node-${startNodeCoords[0]}-${startNodeCoords[1]}`).className = 'node node-start';
     document.getElementById(`node-${finishNodeCoords[0]}-${finishNodeCoords[1]}`).className = 'node node-finish';
     grid = getInitialGrid(algoVisualizer);
-    algoVisualizer.setState({ grid }, callback);
+    algoVisualizer.setState({ grid, numWalls: 0, numNodesInPath: 0, numVisitedNodes: 0 }, callback);
 }
 
 export function getInitialGrid(algoVisualizer){

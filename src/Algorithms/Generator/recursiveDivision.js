@@ -91,8 +91,11 @@ export function computeRecursiveDivision(chamber, startNodeCoords, finishNodeCoo
 export function visualizeRecursiveDivision(algoVisualizer, grid, startNodeCoords, finishNodeCoords) {
     algoVisualizer.setState({running: true});
     resetGrid(algoVisualizer, ()=>{
+        var startTime = new Date().getTime();
         // Get the generated walls in order
         const generatedWallsInOrder = computeRecursiveDivision(grid, startNodeCoords, finishNodeCoords, []);
+        var runTimeSeconds = new Date().getTime() - startTime;
+        algoVisualizer.setState({ runTimeSeconds, lastAlgoRunString: "Recursive Division" });
         animateGeneration(algoVisualizer, generatedWallsInOrder, setWalls);
     });
 }
@@ -105,5 +108,5 @@ function setWalls(algoVisualizer, grid, walls){
             };
         grid[node.row][node.col] = newNode;
     }
-    algoVisualizer.setState({ grid });
+    algoVisualizer.setState({ grid, numWalls: walls.length });
 }

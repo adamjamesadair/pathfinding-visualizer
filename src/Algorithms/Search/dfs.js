@@ -19,8 +19,10 @@ export function visualizeDFS(algoVisualizer, grid, startNodeCoords, finishNodeCo
     clearPath(algoVisualizer);
     const startNode = grid[startNodeCoords[0]][startNodeCoords[1]];
     const finishNode = grid[finishNodeCoords[0]][finishNodeCoords[1]];
+    var startTime = new Date().getTime();
     const visitedNodesInOrder = computeDFS(grid, startNode, finishNode, [])[1];
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(grid[finishNodeCoords[0]][finishNodeCoords[1]]);
+    var runTimeSeconds = new Date().getTime() - startTime;
     if(visitedNodesInOrder) animateAlgorithm(algoVisualizer, visitedNodesInOrder, nodesInShortestPathOrder); else algoVisualizer.setState({running: false});
-    algoVisualizer.setState({isPathDrawn: true});
+    algoVisualizer.setState({isPathDrawn: true, runTimeSeconds, lastAlgoRunString: "DFS"});
 }

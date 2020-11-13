@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Node from './Node/Node';
+import Stats from './Stats/Stats';
 
 import {visualizeDijkstra} from '../Algorithms/Search/dijkstra';
 import {visualizeAStar} from '../Algorithms/Search/aStar';
@@ -18,7 +19,12 @@ export default class AlgoVisualizer extends Component {
             finishNodeCoords: [7, 40],
             running: false,
             dragging: "",
-            isPathDrawn: false
+            isPathDrawn: false,
+            lastAlgoRunString: "",
+            runTimeSeconds: 0,
+            numNodesInPath: 0,
+            numVisitedNodes: 0,
+            numWalls: 0
         };
     }
 
@@ -29,14 +35,16 @@ export default class AlgoVisualizer extends Component {
 
     handleMouseDown(row, col) {
         var type = this.state.grid[row][col].type;
+        var numWalls = this.state.numWalls;
         if(!this.state.running){
             if(type === "startNode") {
                 this.setState({ dragging: "startNode" });
             } else if(type === "finishNode"){
                 this.setState({ dragging: "finishNode" });
             } else {
+                numWalls = type === "wallNode" ? numWalls - 1 : numWalls + 1;
                 const newGrid = getWallUpdatedGrid(this.state.grid, row, col);
-                this.setState({ grid: newGrid, dragging: "wallNode" });
+                this.setState({ grid: newGrid, dragging: "wallNode", numWalls });
             }
         }
     }
@@ -44,6 +52,7 @@ export default class AlgoVisualizer extends Component {
     handleMouseEnter(row, col) {
         const enteredNodeType = this.state.grid[row][col].type;
         var newGrid = this.state.grid;
+        var numWalls = this.state.numWalls;
 
         if(!this.state.dragging === "") return;
         if(!this.state.running){
@@ -52,21 +61,26 @@ export default class AlgoVisualizer extends Component {
                     const randomEmptyNodeCoords = getRandomEmptyNodeCoords(this);
                     newGrid = getNodeUpdatedGrid(newGrid, randomEmptyNodeCoords[0], randomEmptyNodeCoords[1], "finishNode");
                     this.setState({ finishNodeCoords: randomEmptyNodeCoords });
+                } else if(enteredNodeType === "wallNode") {
+                    numWalls -= 1;
                 }
                 newGrid = getNodeUpdatedGrid(newGrid, row, col, "startNode");
-                this.setState({ grid: newGrid });
+                this.setState({ grid: newGrid, numWalls });
             } else if(this.state.dragging === "finishNode") {
                 if(enteredNodeType === "startNode"){
                     const randomEmptyNodeCoords = getRandomEmptyNodeCoords(this);
                     newGrid = getNodeUpdatedGrid(newGrid, randomEmptyNodeCoords[0], randomEmptyNodeCoords[1], "startNode");
                     this.setState({ startNodeCoords: randomEmptyNodeCoords });
+                } else if(enteredNodeType === "wallNode") {
+                    numWalls -= 1;
                 }
                 newGrid = getNodeUpdatedGrid(newGrid, row, col, "finishNode");
-                this.setState({ grid: newGrid });
+                this.setState({ grid: newGrid, numWalls });
 
             } else if(this.state.dragging === "wallNode") {
+                numWalls = enteredNodeType === "wallNode" ? numWalls - 1 : numWalls + 1;
                 newGrid = getWallUpdatedGrid(newGrid, row, col);
-                this.setState({ grid: newGrid });
+                this.setState({ grid: newGrid, numWalls });
             }
         }
     }
@@ -127,7 +141,7 @@ export default class AlgoVisualizer extends Component {
     }
 
     render() {
-        const {grid, startNodeCoords, finishNodeCoords} = this.state;
+        const {grid, startNodeCoords, finishNodeCoords, runTimeSeconds, numNodesInPath, numVisitedNodes, numWalls, lastAlgoRunString} = this.state;
 
         return (
             <div>
@@ -154,31 +168,40 @@ export default class AlgoVisualizer extends Component {
                     </div>
                 </div>
 
-                <div className="grid">
-                    {grid.map((row, rowIdx) => {
-                        return (
-                            <div key={rowIdx}>
-                                {row.map((node, nodeIdx) => {
-                                    const { row, col, type, distance } = node;
-                                    return (
-                                        <Node
-                                            key={nodeIdx}
-                                            className='node'
-                                            row={row}
-                                            col={col}
-                                            type={type}
-                                            distance={distance}
-                                            onMouseDown={(row, col) => this.handleMouseDown(row, col)}
-                                            onMouseEnter={(row, col) => this.handleMouseEnter(row, col)}
-                                            onMouseUp={(row, col) => this.handleMouseUp(row, col)}
-                                            onMouseLeave={(row, col) => this.handleMouseLeave(row, col)}
-                                        >
-                                        </Node>);
-                                })}
-                            </div>
-                        );
-                    })}
+                <div className="grid-container">
+                    <Stats
+                        runTimeSeconds={runTimeSeconds}
+                        numNodesInPath={numNodesInPath}
+                        numVisitedNodes={numVisitedNodes}
+                        numWalls={numWalls}
+                        lastAlgoRunString={lastAlgoRunString}
+                        ></Stats>
+                    <div className="grid">
+                        {grid.map((row, rowIdx) => {
+                            return (
+                                <div key={rowIdx}>
+                                    {row.map((node, nodeIdx) => {
+                                        const { row, col, type, distance } = node;
+                                        return (
+                                            <Node
+                                                key={nodeIdx}
+                                                className='node'
+                                                row={row}
+                                                col={col}
+                                                type={type}
+                                                distance={distance}
+                                                onMouseDown={(row, col) => this.handleMouseDown(row, col)}
+                                                onMouseEnter={(row, col) => this.handleMouseEnter(row, col)}
+                                                onMouseUp={(row, col) => this.handleMouseUp(row, col)}
+                                                onMouseLeave={(row, col) => this.handleMouseLeave(row, col)}
+                                            ></Node>);
+                                    })}
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
+                
             </div>
         );
     }

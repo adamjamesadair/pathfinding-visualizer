@@ -34,8 +34,10 @@ export function visualizeBFS(algoVisualizer, grid, startNodeCoords, finishNodeCo
     clearPath(algoVisualizer);
     const startNode = grid[startNodeCoords[0]][startNodeCoords[1]];
     const finishNode = grid[finishNodeCoords[0]][finishNodeCoords[1]];
+    var startTime = new Date().getTime();
     const visitedNodesInOrder = computeBFS(grid, startNode, finishNode);
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(grid[finishNodeCoords[0]][finishNodeCoords[1]]);
+    var runTimeSeconds = new Date().getTime() - startTime;
     animateAlgorithm(algoVisualizer, visitedNodesInOrder, nodesInShortestPathOrder);
-    algoVisualizer.setState({isPathDrawn: true});
+    algoVisualizer.setState({isPathDrawn: true, runTimeSeconds, lastAlgoRunString: "BFS"});
 }
