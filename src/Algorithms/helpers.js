@@ -26,7 +26,7 @@ export function animateAlgorithm(algoVisualizer, visitedNodesInOrder, nodesInSho
 
 function animateShortestPath(algoVisualizer, nodesInShortestPathOrder) {
     const delay = 25;
-    algoVisualizer.setState({ numNodesInPath: nodesInShortestPathOrder.length });
+    if(nodesInShortestPathOrder.length !== 1) algoVisualizer.setState({ numNodesInPath: nodesInShortestPathOrder.length });
     for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
         setTimeout(() => {
             const node = nodesInShortestPathOrder[i];

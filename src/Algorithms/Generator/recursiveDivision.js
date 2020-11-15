@@ -14,7 +14,7 @@ export function computeRecursiveDivision(chamber, startNodeCoords, finishNodeCoo
         for(var row = 0; row < chamber.length; row++){
             for(var col = 0; col < chamber[0].length; col++){
                 if(row === 0 || col === 0 || row === chamber.length - 1 || col === chamber[0].length - 1 ){
-                    generatedWallsInOrder.push(chamber[row][col]);
+                    if(chamber[row][col].type === "default" || chamber[row][col].type === "wallNode") generatedWallsInOrder.push(chamber[row][col]);
                 }
             }
         }
