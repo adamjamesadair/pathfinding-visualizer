@@ -1,0 +1,10 @@
+.legend-component {
+  display: inline-block;
+  margin: auto;
+  padding: 10px;
+}
+
+.legend-item {
+  display: inline-block;
+  margin: 0 10px;
+}

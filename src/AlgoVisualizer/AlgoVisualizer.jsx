@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import Node from './Node/Node';
 import Stats from './Stats/Stats';
+import Legend from './Legend/Legend';
 
 import {visualizeDijkstra} from '../Algorithms/Search/dijkstra';
 import {visualizeAStar} from '../Algorithms/Search/aStar';
@@ -169,6 +170,7 @@ export default class AlgoVisualizer extends Component {
                 </div>
 
                 <div className="grid-container">
+                    <Legend></Legend>
                     <Stats
                         runTimeSeconds={runTimeSeconds}
                         numNodesInPath={numNodesInPath}

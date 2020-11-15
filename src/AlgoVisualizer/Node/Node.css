@@ -7,7 +7,7 @@
   border: 1px solid white;
 }
 
-.node:hover:not(.node-start):not(.node-finish):not(.node-wall) {
+.node:hover:not(.node-start):not(.node-finish):not(.node-wall):not(.node-legend) {
   background-color: lightblue;
 }
 
