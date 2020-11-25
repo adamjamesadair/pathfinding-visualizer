@@ -1,17 +1,23 @@
-export function animateAlgorithm(algoVisualizer, visitedNodesInOrder, nodesInShortestPathOrder) {
+import _ from "lodash";
+
+export function animateAlgorithm(algoVisualizer, visitedNodesInOrderList, nodesInShortestPathOrderList) {
     const delay = 10;
-    algoVisualizer.setState({ numVisitedNodes: visitedNodesInOrder.length });
-    for (let i = 0; i <= visitedNodesInOrder.length; i++) {
-        if (i === visitedNodesInOrder.length) {
+    const shortestPathDelay = 25;
+    var numVisitedNodes = 0;
+    var numNodesInPath = 0;
+
+    numVisitedNodes += visitedNodesInOrderList.length;
+    for (let i = 0; i < visitedNodesInOrderList.length; i++) {
+        if (i === visitedNodesInOrderList.length - 1) {
+            numNodesInPath += new Set(nodesInShortestPathOrderList).size;
             // Animate the shortest path
             setTimeout(() => {
-                animateShortestPath(algoVisualizer, nodesInShortestPathOrder);
+                animateShortestPath(algoVisualizer, nodesInShortestPathOrderList, shortestPathDelay);
             }, delay * i);
-            return;
         }
         
         setTimeout(() => {
-            const node = visitedNodesInOrder[i];
+            const node = visitedNodesInOrderList[i];
             var oldClasses = document.getElementById(`node-${node.row}-${node.col}`).className
             // Animate the current node
             document.getElementById(`node-${node.row}-${node.col}`).className = oldClasses + ' node-current';
@@ -21,17 +27,17 @@ export function animateAlgorithm(algoVisualizer, visitedNodesInOrder, nodesInSho
             }, delay);
         }, delay * i);
     }
-    
+    algoVisualizer.setState({ numVisitedNodes, numNodesInPath });
 }
 
-function animateShortestPath(algoVisualizer, nodesInShortestPathOrder) {
-    const delay = 25;
-    if(nodesInShortestPathOrder.length !== 1) algoVisualizer.setState({ numNodesInPath: nodesInShortestPathOrder.length });
+function animateShortestPath(algoVisualizer, nodesInShortestPathOrder, delay=25) {
     for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
         setTimeout(() => {
             const node = nodesInShortestPathOrder[i];
-            document.getElementById(`node-${node.row}-${node.col}`).className = 
-            document.getElementById(`node-${node.row}-${node.col}`).className + ' node-shortest-path';
+            // Redraw element to restart animation on nodes with class node-shortest-path
+            var nodeElement = document.getElementById(`node-${node.row}-${node.col}`);
+            nodeElement.className = nodeElement.className.replace(" node-shortest-path", "");
+            setTimeout(()=>{nodeElement.className = nodeElement.className + ' node-shortest-path';}, 10);
         }, delay * i);
     }
     setTimeout(()=>{algoVisualizer.setState({running: false});}, delay * nodesInShortestPathOrder.length);
@@ -128,27 +134,30 @@ export function sortNodesByDistanceAndHeuristic(nodes){
 }
 
 export function clearPath(algoVisualizer, callback=null) {
-    var {grid} = algoVisualizer.state;
+    var { grid } = algoVisualizer.state;
     
     for(const row of grid) {
         for(var node of row){
             // update node values
             var distance = node.type === "startNode" ? 0 : Infinity; 
-            grid[node.row][node.col] = createNode(node.row, node.col, node.type, distance);
+            grid[node.row][node.col] = createNode(node.row, node.col, node.type, distance, node.text);
             // update css class
             if(node.type === "default"){
                 document.getElementById(`node-${node.row}-${node.col}`).className = 'node';
+            } else if(node.type === "checkpointNode") {
+                document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-checkpoint';
             }
         }
     }
     algoVisualizer.setState({ grid, isPathDrawn: false, numNodesInPath: 0, numVisitedNodes: 0 }, callback);
 }
 
-export function createNode(row, col, type, distance) {
+export function createNode(row, col, type, distance, text="") {
     return {
         row,
         col,
         type,
+        text,
         distance,
         heuristic: 0,
         isVisited: false,
@@ -171,7 +180,7 @@ export function randomOddInteger(min, max) {
 }
 
 export function resetGrid(algoVisualizer, callback) {
-    var {grid, startNodeCoords, finishNodeCoords} = algoVisualizer.state;
+    var { grid, startNodeCoords, finishNodeCoords } = algoVisualizer.state;
 
     // reset node classnames
     for (const row of grid) {
@@ -184,7 +193,7 @@ export function resetGrid(algoVisualizer, callback) {
     document.getElementById(`node-${startNodeCoords[0]}-${startNodeCoords[1]}`).className = 'node node-start';
     document.getElementById(`node-${finishNodeCoords[0]}-${finishNodeCoords[1]}`).className = 'node node-finish';
     grid = getInitialGrid(algoVisualizer);
-    algoVisualizer.setState({ grid, numWalls: 0, numNodesInPath: 0, numVisitedNodes: 0 }, callback);
+    algoVisualizer.setState({ grid, numWalls: 0, numNodesInPath: 0, numVisitedNodes: 0, checkpointNodes: [] }, callback);
 }
 
 export function getInitialGrid(algoVisualizer){
@@ -215,7 +224,7 @@ export function getEuclideanDistance(x1, y1, x2, y2){
 }
 
 export function getRandomEmptyNodeCoords(algoVisualizer){
-    var {grid} = algoVisualizer.state;
+    var { grid } = algoVisualizer.state;
     var emptyNodes = [];
     // Get all empty nodes
     for(var row of grid){
@@ -228,4 +237,71 @@ export function getRandomEmptyNodeCoords(algoVisualizer){
         var node = emptyNodes[nodeRow][randomInteger(0, emptyNodes[nodeRow].length - 1)];
         return [node.row, node.col];
     }
+}
+
+export function visualizAlgorithm(computeAlgorithm, lastAlgoRunString, algoVisualizer, grid, startNodeCoords, finishNodeCoords) {
+    var startTime, runTimeSeconds, destinationNodeInfo, gridCopy, startNode, finishNode;
+    var originalStartNodeCoords = algoVisualizer.state.startNodeCoords;
+    var visitedNodesInOrder = [];
+    var nodesInShortestPathOrder = [];
+    var checkpointNodes = algoVisualizer.state.checkpointNodes;
+    checkpointNodes.sort((nodeA, nodeB) => nodeA.id - nodeB.id);
+
+    algoVisualizer.setState({running: true, isPathDrawn: true});
+    clearPath(algoVisualizer);
+    // Reset the checkpoint nodes
+    for(var checkpointNodeInfo of checkpointNodes) {
+        checkpointNodeInfo.isVisited = false;
+        checkpointNodeInfo.distance = Infinity;
+    }
+
+    while(algoVisualizer.getDestinationNodeInfo().coords !== finishNodeCoords) {
+        destinationNodeInfo = algoVisualizer.getDestinationNodeInfo();
+        startTime = new Date().getTime();
+        gridCopy = _.cloneDeep(grid);
+        gridCopy[originalStartNodeCoords[0]][originalStartNodeCoords[1]].distance = Infinity;
+        gridCopy[startNodeCoords[0]][startNodeCoords[1]].distance = 0;
+        if(lastAlgoRunString === "DFS") {
+            startNode = gridCopy[startNodeCoords[0]][startNodeCoords[1]];
+            finishNode = gridCopy[destinationNodeInfo.coords[0]][destinationNodeInfo.coords[1]];
+            visitedNodesInOrder.push(computeAlgorithm(gridCopy, startNode, finishNode, [])[1]);
+        } else {
+            visitedNodesInOrder.push(computeAlgorithm(gridCopy, startNodeCoords, destinationNodeInfo.coords));
+        }
+        nodesInShortestPathOrder.push(getNodesInShortestPathOrder(gridCopy[destinationNodeInfo.coords[0]][destinationNodeInfo.coords[1]]));
+        runTimeSeconds = new Date().getTime() - startTime;
+        startNodeCoords = destinationNodeInfo.coords;
+        destinationNodeInfo.isVisited = true;
+        for(let checkpointNodeInfo of checkpointNodes) {
+            if(checkpointNodeInfo.id === destinationNodeInfo.id - 1) checkpointNodeInfo = destinationNodeInfo;
+        }
+    }
+    
+    startTime = new Date().getTime();
+    gridCopy = _.cloneDeep(grid);
+    gridCopy[originalStartNodeCoords[0]][originalStartNodeCoords[1]].distance = Infinity;
+    gridCopy[startNodeCoords[0]][startNodeCoords[1]].distance = 0;
+    if(lastAlgoRunString === "DFS") {
+        startNode = gridCopy[startNodeCoords[0]][startNodeCoords[1]];
+        finishNode = gridCopy[finishNodeCoords[0]][finishNodeCoords[1]];
+        visitedNodesInOrder.push(computeAlgorithm(gridCopy, startNode, finishNode, [])[1]);
+    } else {
+        visitedNodesInOrder.push(computeAlgorithm(gridCopy, startNodeCoords, finishNodeCoords));
+    }
+    nodesInShortestPathOrder.push(getNodesInShortestPathOrder(gridCopy[finishNodeCoords[0]][finishNodeCoords[1]]));
+    runTimeSeconds = new Date().getTime() - startTime;
+
+    var isPathPossible = true;
+    for(var nodesInShortestPath of nodesInShortestPathOrder) {
+        if(nodesInShortestPath.length <= 1 ) {
+            isPathPossible = false;
+        }
+    }
+
+    if(isPathPossible) {
+        animateAlgorithm(algoVisualizer, visitedNodesInOrder.flat(), nodesInShortestPathOrder.flat());
+    } else {
+        animateAlgorithm(algoVisualizer, visitedNodesInOrder.flat(), []);
+    }
+    algoVisualizer.setState({ visitedNodesToAnimate: visitedNodesInOrder, pathNodesToAnimate: nodesInShortestPathOrder, checkpointNodes, isPathDrawn: true, runTimeSeconds, lastAlgoRunString});
 }

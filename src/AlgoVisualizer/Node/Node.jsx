@@ -13,6 +13,7 @@ export default class Node extends Component {
             row,
             col,
             type,
+            text,
             onMouseDown,
             onMouseEnter,
             onMouseUp,
@@ -23,6 +24,8 @@ export default class Node extends Component {
             ? 'node-finish'
             : type === "startNode"
             ? 'node-start'
+            : type === "checkpointNode"
+            ? 'node-checkpoint'
             : type === "wallNode"
             ? 'node-wall'
             : '';
@@ -34,7 +37,7 @@ export default class Node extends Component {
                 onMouseDown={() => onMouseDown(row, col)}
                 onMouseEnter={() => onMouseEnter(row, col)}
                 onMouseLeave={() => onMouseLeave(row, col)}
-                onMouseUp={() => onMouseUp(row, col)}><div className='node-center'></div>
+                onMouseUp={() => onMouseUp(row, col)}><div className='node-center'>{text}</div>
             </div>
         );
     }

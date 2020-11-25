@@ -9,17 +9,17 @@ export default class Legend extends Component {
     }
 
     render() {
-        const {} = this.props;
-
         return (
             <div id='legend-component' className="legend-component">
-                        <p className="legend-item"><div className='node node-start'></div><b> Start</b></p>
-                        <p className="legend-item"><div className='node node-finish'></div><b> Finish</b></p>
-                        <p className="legend-item"><div className='node node-wall'></div><b> Wall</b></p>
-                        <p className="legend-item"><div className='node node-visited node-legend'></div><b> Visited</b></p>
-                        <p className="legend-item"><div className='node node-shortest-path node-legend'></div><b> Path</b></p>
-                        <p className="legend-item"><div className='node node-current node-legend'></div><b> Current</b></p>
-                        <p className="legend-item"><div className='node node-legend'></div><b> Unvisited</b></p>
+                        <div className='node node-start'></div><p className="legend-item"><b> Start</b></p>
+                        <div className='node node-finish'></div><p className="legend-item"><b> Finish</b></p>
+                        <div className='node node-wall'></div><p className="legend-item"><b> Wall</b></p>
+                        <div className='node node-visited node-legend'></div><p className="legend-item"><b> Visited</b></p>
+                        <div className='node node-shortest-path node-legend'></div><p className="legend-item"><b> Path</b></p>
+                        <div className='node node-current node-legend'></div><p className="legend-item"><b> Current</b></p>
+                        <div className='node node-legend'></div><p className="legend-item"><b> Unvisited</b></p>
+                        <div className='node node-checkpoint node-legend'></div><p className="legend-item"><b> Checkpoint</b></p>
+                        <div className='node node-checkpoint node-current node-legend'></div><p className="legend-item"><b> Visited Checkpoint</b></p>
                     </div>
         );
     }

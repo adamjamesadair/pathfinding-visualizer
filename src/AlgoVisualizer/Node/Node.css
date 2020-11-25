@@ -7,7 +7,7 @@
   border: 1px solid white;
 }
 
-.node:hover:not(.node-start):not(.node-finish):not(.node-wall):not(.node-legend) {
+.node:hover:not(.node-start):not(.node-finish):not(.node-wall):not(.node-legend):not(.node-checkpoint) {
   background-color: lightblue;
 }
 
@@ -17,6 +17,10 @@
 
 .node-finish {
   background-color: #f6511d;
+}
+
+.node-checkpoint {
+  background-color: #f39237;
 }
 
 @keyframes walls {
@@ -45,12 +49,41 @@
   }
 }
 
+@keyframes shortest-path {
+  0% {
+    background-color: rgb(126, 18, 18);
+    width: 100%;
+    height: 100%;
+  }
+  100% {
+    background-color: #f0a12a;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.node-center {
+  text-align: center;
+  cursor: default;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  user-select: none; /* Chrome, Edge, Opera and Firefox */
+}
+
 .node-visited .node-center {
   margin: auto;
   width: 0%;
   height: 0%;
   animation-name: visited;
   animation-duration: 0.25s;
+}
+
+.node-shortest-path .node-center {
+  margin: auto;
+  width: 0%;
+  height: 0%;
+  animation-name: shortest-path;
+  animation-duration: 0.05s;
 }
 
 .node-wall .node-center {
@@ -66,14 +99,18 @@
   background-color: black;
 }
 
-.node-visited:not(.node-start):not(.node-finish) {
+.node-visited:not(.node-start):not(.node-finish):not(.node-checkpoint) {
   background-color: #2a9d8f;
 }
 
-.node-shortest-path:not(.node-start):not(.node-finish) {
+.node-shortest-path:not(.node-start):not(.node-finish):not(.node-checkpoint) {
   background-color: #e9c46a;
 }
 
-.node-current {
+.node-current:not(.node-start):not(.node-finish):not(.node-checkpoint) {
   background-color: yellow;
+}
+
+.node-current.node-checkpoint {
+  background-color: #eeaddf;
 }

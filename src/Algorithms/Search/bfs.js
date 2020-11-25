@@ -1,6 +1,8 @@
 import { animateAlgorithm, getUnvisitedNeighbors, getNodesInShortestPathOrder, clearPath } from '../helpers.js';
 
-function computeBFS(grid, startNode, finishNode) {
+export function computeBFS(grid, startNodeCoords, finishNodeCoords) {
+    var startNode = grid[startNodeCoords[0]][startNodeCoords[1]];
+    var finishNode = grid[finishNodeCoords[0]][finishNodeCoords[1]];
     var queue = [startNode];
     var path = [startNode];
     startNode.isVisited = true;

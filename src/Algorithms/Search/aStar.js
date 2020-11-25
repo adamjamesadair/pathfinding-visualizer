@@ -1,4 +1,5 @@
 import { animateAlgorithm, sortNodesByDistanceAndHeuristic, getAllNodes, getNeighbors, getNodesInShortestPathOrder, clearPath, getEuclideanDistance } from '../helpers.js';
+import _ from "lodash";
 
 export function computeAStar(grid, startNodeCoords, finishNodeCoords) {
     const startNode = grid[startNodeCoords[0]][startNodeCoords[1]];
@@ -27,14 +28,35 @@ export function computeAStar(grid, startNodeCoords, finishNodeCoords) {
 }
 
 export function visualizeAStar(algoVisualizer, grid, startNodeCoords, finishNodeCoords) {
+    var startTime, runTimeSeconds, destinationNodeInfo, gridCopy;
+    var { originalStartNodeCoords, checkpointNodes } = algoVisualizer.state;
+    var visitedNodesInOrder = [];
+    var nodesInShortestPathOrder = [];
+
     algoVisualizer.setState({running: true, isPathDrawn: true});
     clearPath(algoVisualizer);
-    var startTime = new Date().getTime();
-    const visitedNodesInOrder = computeAStar(grid, startNodeCoords, finishNodeCoords);
-    const nodesInShortestPathOrder = getNodesInShortestPathOrder(grid[finishNodeCoords[0]][finishNodeCoords[1]]);
-    var runTimeSeconds = new Date().getTime() - startTime;
+
+    while(algoVisualizer.getDestinationNodeInfo().coords !== finishNodeCoords) {
+        destinationNodeInfo = algoVisualizer.getDestinationNodeInfo();
+        startTime = new Date().getTime();
+        gridCopy = _.cloneDeep(grid);
+        gridCopy[originalStartNodeCoords[0]][originalStartNodeCoords[1]].distance = Infinity;
+        visitedNodesInOrder.push(computeAStar(gridCopy, startNodeCoords, destinationNodeInfo.coords));
+        nodesInShortestPathOrder.push(getNodesInShortestPathOrder(gridCopy[destinationNodeInfo.coords[0]][destinationNodeInfo.coords[1]]));
+        runTimeSeconds = new Date().getTime() - startTime;
+        startNodeCoords = destinationNodeInfo.coords;
+        destinationNodeInfo.isVisited = true;
+        checkpointNodes[destinationNodeInfo.id - 1] = destinationNodeInfo;
+    }
+    
+    startTime = new Date().getTime();
+    gridCopy = _.cloneDeep(grid);
+    visitedNodesInOrder.push(computeAStar(gridCopy, startNodeCoords, finishNodeCoords));
+    nodesInShortestPathOrder.push(getNodesInShortestPathOrder(gridCopy[finishNodeCoords[0]][finishNodeCoords[1]]));
+    runTimeSeconds = new Date().getTime() - startTime;
+
     animateAlgorithm(algoVisualizer, visitedNodesInOrder, nodesInShortestPathOrder);
-    algoVisualizer.setState({isPathDrawn: true, runTimeSeconds, lastAlgoRunString: "A*"});
+    algoVisualizer.setState({visitedNodesToAnimate: visitedNodesInOrder, pathNodesToAnimate: nodesInShortestPathOrder, checkpointNodes, isPathDrawn: true, runTimeSeconds, lastAlgoRunString: "A*"});
 }
 
 function updateneighbors(node, grid) {

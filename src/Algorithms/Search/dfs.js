@@ -1,6 +1,6 @@
 import { animateAlgorithm, getUnvisitedNeighbors, getNodesInShortestPathOrder, clearPath } from '../helpers.js';
 
-function computeDFS(grid, currentNode, finishNode, visitedNodes) {
+export function computeDFS(grid, currentNode, finishNode, visitedNodes) {
     visitedNodes.push(currentNode);
     currentNode.isVisited = true;
     if(currentNode === finishNode) return [visitedNodes, visitedNodes];
