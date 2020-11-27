@@ -245,6 +245,8 @@ export function visualizAlgorithm(computeAlgorithm, lastAlgoRunString, algoVisua
     var visitedNodesInOrder = [];
     var nodesInShortestPathOrder = [];
     var checkpointNodes = algoVisualizer.state.checkpointNodes;
+    var isPathPossible = true;
+    var shortestPath = [];
     checkpointNodes.sort((nodeA, nodeB) => nodeA.id - nodeB.id);
 
     algoVisualizer.setState({running: true, isPathDrawn: true});
@@ -268,40 +270,39 @@ export function visualizAlgorithm(computeAlgorithm, lastAlgoRunString, algoVisua
         } else {
             visitedNodesInOrder.push(computeAlgorithm(gridCopy, startNodeCoords, destinationNodeInfo.coords));
         }
-        nodesInShortestPathOrder.push(getNodesInShortestPathOrder(gridCopy[destinationNodeInfo.coords[0]][destinationNodeInfo.coords[1]]));
+        shortestPath = getNodesInShortestPathOrder(gridCopy[destinationNodeInfo.coords[0]][destinationNodeInfo.coords[1]])
+        nodesInShortestPathOrder.push(shortestPath);
         runTimeSeconds = new Date().getTime() - startTime;
         startNodeCoords = destinationNodeInfo.coords;
         destinationNodeInfo.isVisited = true;
         for(let checkpointNodeInfo of checkpointNodes) {
             if(checkpointNodeInfo.id === destinationNodeInfo.id - 1) checkpointNodeInfo = destinationNodeInfo;
         }
-    }
-    
-    startTime = new Date().getTime();
-    gridCopy = _.cloneDeep(grid);
-    gridCopy[originalStartNodeCoords[0]][originalStartNodeCoords[1]].distance = Infinity;
-    gridCopy[startNodeCoords[0]][startNodeCoords[1]].distance = 0;
-    if(lastAlgoRunString === "DFS") {
-        startNode = gridCopy[startNodeCoords[0]][startNodeCoords[1]];
-        finishNode = gridCopy[finishNodeCoords[0]][finishNodeCoords[1]];
-        visitedNodesInOrder.push(computeAlgorithm(gridCopy, startNode, finishNode, [])[1]);
-    } else {
-        visitedNodesInOrder.push(computeAlgorithm(gridCopy, startNodeCoords, finishNodeCoords));
-    }
-    nodesInShortestPathOrder.push(getNodesInShortestPathOrder(gridCopy[finishNodeCoords[0]][finishNodeCoords[1]]));
-    runTimeSeconds = new Date().getTime() - startTime;
 
-    var isPathPossible = true;
-    for(var nodesInShortestPath of nodesInShortestPathOrder) {
-        if(nodesInShortestPath.length <= 1 ) {
+        if(shortestPath.length <= 1) {
             isPathPossible = false;
+            break;
         }
     }
-
+    
     if(isPathPossible) {
+        startTime = new Date().getTime();
+        gridCopy = _.cloneDeep(grid);
+        gridCopy[originalStartNodeCoords[0]][originalStartNodeCoords[1]].distance = Infinity;
+        gridCopy[startNodeCoords[0]][startNodeCoords[1]].distance = 0;
+        if(lastAlgoRunString === "DFS") {
+            startNode = gridCopy[startNodeCoords[0]][startNodeCoords[1]];
+            finishNode = gridCopy[finishNodeCoords[0]][finishNodeCoords[1]];
+            visitedNodesInOrder.push(computeAlgorithm(gridCopy, startNode, finishNode, [])[1]);
+        } else {
+            visitedNodesInOrder.push(computeAlgorithm(gridCopy, startNodeCoords, finishNodeCoords));
+        }
+        nodesInShortestPathOrder.push(getNodesInShortestPathOrder(gridCopy[finishNodeCoords[0]][finishNodeCoords[1]]));
+        runTimeSeconds = new Date().getTime() - startTime;
         animateAlgorithm(algoVisualizer, visitedNodesInOrder.flat(), nodesInShortestPathOrder.flat());
     } else {
         animateAlgorithm(algoVisualizer, visitedNodesInOrder.flat(), []);
     }
+
     algoVisualizer.setState({ visitedNodesToAnimate: visitedNodesInOrder, pathNodesToAnimate: nodesInShortestPathOrder, checkpointNodes, isPathDrawn: true, runTimeSeconds, lastAlgoRunString});
 }

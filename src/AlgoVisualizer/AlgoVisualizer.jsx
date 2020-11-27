@@ -61,9 +61,10 @@ export default class AlgoVisualizer extends Component {
     }
     
     handleMouseEnter(row, col) {
-        const enteredNodeType = this.state.grid[row][col].type;
-        var newGrid = this.state.grid;
-        var { running, dragging, numWalls, startNodeCoords, finishNodeCoords, checkpointNodes, draggingCheckpointNodeInfo } = this.state;
+        var { grid, running, dragging, numWalls, startNodeCoords, finishNodeCoords, checkpointNodes, draggingCheckpointNodeInfo } = this.state;
+        const enteredNodeType = grid[row][col].type;
+        var enteredNodeID = "";
+        var newGrid = grid;
 
         if(running || dragging === "") return;
 
@@ -83,12 +84,16 @@ export default class AlgoVisualizer extends Component {
                     newGrid = getNodeUpdatedGrid(newGrid, randomEmptyNodeCoords[0], randomEmptyNodeCoords[1], "startNode");
                     startNodeCoords = randomEmptyNodeCoords;
                 } else if(enteredNodeType === "checkpointNode") {
-                    newGrid = getNodeUpdatedGrid(newGrid, randomEmptyNodeCoords[0], randomEmptyNodeCoords[1], "checkpointNode", draggingCheckpointNodeInfo.text);
                     // Update checkpointNode state
-                    draggingCheckpointNodeInfo.coords = [row, col];
                     checkpointNodes.forEach(checkpointNodeInfo => {
-                        if(checkpointNodeInfo.id === draggingCheckpointNodeInfo.id) checkpointNodeInfo = draggingCheckpointNodeInfo;
+                        // if(checkpointNodeInfo.id === draggingCheckpointNodeInfo.id) checkpointNodeInfo.coods = randomEmptyNodeCoords;
+                        if(checkpointNodeInfo.coords[0] === row && checkpointNodeInfo.coords[1] === col) {
+                            checkpointNodeInfo.coords = randomEmptyNodeCoords;
+                            enteredNodeID = checkpointNodeInfo.id;
+                        }
                     });
+                    draggingCheckpointNodeInfo.coords = [row, col];
+                    newGrid = getNodeUpdatedGrid(newGrid, randomEmptyNodeCoords[0], randomEmptyNodeCoords[1], "checkpointNode", enteredNodeID);
                 }
             }
         } else if(dragging === "default") {
