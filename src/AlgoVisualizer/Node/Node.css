@@ -107,7 +107,7 @@
   background-color: #e9c46a;
 }
 
-.node-current:not(.node-start):not(.node-finish):not(.node-checkpoint) {
+.node-current:not(.node-start):not(.node-finish):not(.node-checkpoint):not(.node-shortest-path) {
   background-color: yellow;
 }
 
