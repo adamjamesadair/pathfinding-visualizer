@@ -61,7 +61,6 @@ export function visualizeAStar(algoVisualizer, grid, startNodeCoords, finishNode
 
 function updateneighbors(node, grid) {
     const neighbors = getNeighbors(node, grid);
-    const weight = 1;
     for (const neighbor of neighbors) {
         if(neighbor.isVisited){
             if(neighbor.distance - neighbor.heuristic < node.previousNode.distance - node.previousNode.heuristic){
@@ -69,9 +68,9 @@ function updateneighbors(node, grid) {
             }
         } else {
             if(node.distance === 0){
-                neighbor.distance = weight + neighbor.heuristic; 
+                neighbor.distance = neighbor.weight + neighbor.heuristic; 
             } else {
-                neighbor.distance = node.distance - node.heuristic + weight + neighbor.heuristic;
+                neighbor.distance = node.distance - node.heuristic + neighbor.weight + neighbor.heuristic;
             }
             neighbor.previousNode = node;
         }

@@ -29,7 +29,7 @@ export function computeDijkstra(grid, startNodeCoords, finishNodeCoords) {
 function updateUnvisitedNeighbors(node, grid) {
   const unvisitedNeighbors = getUnvisitedNeighbors(node, grid);
   for (const neighbor of unvisitedNeighbors) {
-    neighbor.distance = node.distance + 1;
+    neighbor.distance = node.distance + neighbor.weight;
     neighbor.previousNode = node;
   }
 }

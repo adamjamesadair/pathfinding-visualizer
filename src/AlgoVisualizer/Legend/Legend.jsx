@@ -14,6 +14,7 @@ export default class Legend extends Component {
                         <div className='node node-start'></div><p className="legend-item"><b> Start</b></p>
                         <div className='node node-finish'></div><p className="legend-item"><b> Finish</b></p>
                         <div className='node node-wall'></div><p className="legend-item"><b> Wall</b></p>
+                        <div className='node node-weight'><div className='node-center'></div></div><p className="legend-item"><b> Weight</b></p>
                         <div className='node node-visited node-legend'></div><p className="legend-item"><b> Visited</b></p>
                         <div className='node node-shortest-path node-legend'></div><p className="legend-item"><b> Path</b></p>
                         <div className='node node-current node-legend'></div><p className="legend-item"><b> Current</b></p>

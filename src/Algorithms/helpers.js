@@ -134,31 +134,39 @@ export function sortNodesByDistanceAndHeuristic(nodes){
 }
 
 export function clearPath(algoVisualizer, callback=null) {
-    var { grid } = algoVisualizer.state;
+    var { grid, checkpointNodes } = algoVisualizer.state;
+
+    // Mark checkpoint nodes as unvisited 
+    for(let checkpointNodeInfo of checkpointNodes){
+        checkpointNodeInfo.isVisited = false;
+    }
     
     for(const row of grid) {
         for(var node of row){
             // update node values
             var distance = node.type === "startNode" ? 0 : Infinity; 
-            grid[node.row][node.col] = createNode(node.row, node.col, node.type, distance, node.text);
+            grid[node.row][node.col] = createNode(node.row, node.col, node.type, distance, node.text, node.weight);
             // update css class
             if(node.type === "default"){
                 document.getElementById(`node-${node.row}-${node.col}`).className = 'node';
             } else if(node.type === "checkpointNode") {
                 document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-checkpoint';
+            } else if(node.type === "weightNode"){
+                document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-weight';
             }
         }
     }
-    algoVisualizer.setState({ grid, isPathDrawn: false, numNodesInPath: 0, numVisitedNodes: 0 }, callback);
+    algoVisualizer.setState({ grid, checkpointNodes, isPathDrawn: false, numNodesInPath: 0, numVisitedNodes: 0 }, callback);
 }
 
-export function createNode(row, col, type, distance, text="") {
+export function createNode(row, col, type, distance, text="", weight=1) {
     return {
         row,
         col,
         type,
         text,
         distance,
+        weight,
         heuristic: 0,
         isVisited: false,
         previousNode: null
@@ -193,7 +201,7 @@ export function resetGrid(algoVisualizer, callback) {
     document.getElementById(`node-${startNodeCoords[0]}-${startNodeCoords[1]}`).className = 'node node-start';
     document.getElementById(`node-${finishNodeCoords[0]}-${finishNodeCoords[1]}`).className = 'node node-finish';
     grid = getInitialGrid(algoVisualizer);
-    algoVisualizer.setState({ grid, numWalls: 0, numNodesInPath: 0, numVisitedNodes: 0, checkpointNodes: [] }, callback);
+    algoVisualizer.setState({ grid, numWeights: 0, numWalls: 0, numNodesInPath: 0, numVisitedNodes: 0, checkpointNodes: [] }, callback);
 }
 
 export function getInitialGrid(algoVisualizer){

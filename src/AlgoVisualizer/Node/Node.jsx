@@ -14,6 +14,7 @@ export default class Node extends Component {
             col,
             type,
             text,
+            weight,
             onMouseDown,
             onMouseEnter,
             onMouseUp,
@@ -28,12 +29,15 @@ export default class Node extends Component {
             ? 'node-checkpoint'
             : type === "wallNode"
             ? 'node-wall'
+            : type === "weightNode"
+            ? 'node-weight'
             : '';
 
         return (
             <div 
                 id={`node-${row}-${col}`}
                 className = {`node ${typeClass}`}
+                weight = {weight}
                 onMouseDown={() => onMouseDown(row, col)}
                 onMouseEnter={() => onMouseEnter(row, col)}
                 onMouseLeave={() => onMouseLeave(row, col)}

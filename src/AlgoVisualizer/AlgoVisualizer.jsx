@@ -27,7 +27,10 @@ export default class AlgoVisualizer extends Component {
             runTimeSeconds: 0,
             numNodesInPath: 0,
             numVisitedNodes: 0,
-            numWalls: 0
+            numWalls: 0,
+            numWeights: 0,
+            weight: 5,
+            drawMode: "wall"
         };
     }
 
@@ -38,14 +41,28 @@ export default class AlgoVisualizer extends Component {
 
     handleMouseDown(row, col) {
         var type = this.state.grid[row][col].type;
-        var { running, grid, numWalls, checkpointNodes, draggingCheckpointNodeInfo } = this.state;
+        var { drawMode, running, grid, numWalls, numWeights, weight, checkpointNodes, draggingCheckpointNodeInfo } = this.state;
+        var newGrid;
+        var nodeType = "default";
 
         if(running) return; 
 
-        if(type === "wallNode" || type === "default") {
-            numWalls = type === "wallNode" ? numWalls - 1 : numWalls + 1;
-            const newGrid = getWallUpdatedGrid(grid, row, col);
-            this.setState({ grid: newGrid, dragging: type, numWalls });
+        if(["wallNode", "weightNode", "default"].includes(type)) {
+            if(type === "wallNode") numWalls -= 1;
+            if(type === "weightNode") numWeights -= 1;
+
+            if(drawMode === "weight") {
+                if(["default", "wallNode"].includes(type)) {
+                    numWeights += 1;
+                    nodeType = "weightNode";
+                }
+                newGrid = getNodeUpdatedGrid(grid, row, col, nodeType, "", weight);
+            }
+            if(drawMode === "wall") {
+                if(["default", "weightNode"].includes(type)) numWalls += 1;
+                newGrid = getWallUpdatedGrid(grid, row, col);
+            }
+            this.setState({ grid: newGrid, dragging: type, numWalls, numWeights });
         } else if (type === "checkpointNode") {
             // Keep track of which checkpoiontNode is being dragged
             checkpointNodes.forEach(checkpointNodeInfo => {
@@ -57,14 +74,14 @@ export default class AlgoVisualizer extends Component {
         } else {
             this.setState({ dragging: type });
         }
-        
     }
     
     handleMouseEnter(row, col) {
-        var { grid, running, dragging, numWalls, startNodeCoords, finishNodeCoords, checkpointNodes, draggingCheckpointNodeInfo } = this.state;
+        var { grid, running, dragging, drawMode, weight, numWalls, numWeights, startNodeCoords, finishNodeCoords, checkpointNodes, draggingCheckpointNodeInfo } = this.state;
         const enteredNodeType = grid[row][col].type;
         var enteredNodeID = "";
         var newGrid = grid;
+        var nodeType = "";
 
         if(running || dragging === "") return;
 
@@ -86,7 +103,6 @@ export default class AlgoVisualizer extends Component {
                 } else if(enteredNodeType === "checkpointNode") {
                     // Update checkpointNode state
                     checkpointNodes.forEach(checkpointNodeInfo => {
-                        // if(checkpointNodeInfo.id === draggingCheckpointNodeInfo.id) checkpointNodeInfo.coods = randomEmptyNodeCoords;
                         if(checkpointNodeInfo.coords[0] === row && checkpointNodeInfo.coords[1] === col) {
                             checkpointNodeInfo.coords = randomEmptyNodeCoords;
                             enteredNodeID = checkpointNodeInfo.id;
@@ -96,11 +112,24 @@ export default class AlgoVisualizer extends Component {
                     newGrid = getNodeUpdatedGrid(newGrid, randomEmptyNodeCoords[0], randomEmptyNodeCoords[1], "checkpointNode", enteredNodeID);
                 }
             }
-        } else if(dragging === "default") {
-            numWalls = enteredNodeType === "wallNode" ? numWalls - 1 : numWalls + 1;
-            newGrid = getWallUpdatedGrid(newGrid, row, col);
+        } else {
+            if(drawMode === "wall") {
+                numWalls = enteredNodeType === "wallNode" ? numWalls - 1 : numWalls + 1;
+                newGrid = getWallUpdatedGrid(newGrid, row, col);
+            }else if(drawMode === "weight") {
+                if(enteredNodeType === "weightNode") {
+                    numWeights -= 1;
+                    nodeType = "default";
+                    weight = 1;
+                } else {
+                    if(enteredNodeType === "wallNode") numWalls -= 1;
+                    numWeights += 1;
+                    nodeType = "weightNode";
+                }
+                newGrid = getNodeUpdatedGrid(newGrid, row, col, nodeType, "", weight);
+            }
         }
-        this.setState({ grid: newGrid, numWalls, startNodeCoords, finishNodeCoords, checkpointNodes, draggingCheckpointNodeInfo });
+        this.setState({ grid: newGrid, numWalls, numWeights, startNodeCoords, finishNodeCoords, checkpointNodes, draggingCheckpointNodeInfo });
     }
     
     handleMouseLeave(row, col){
@@ -169,13 +198,7 @@ export default class AlgoVisualizer extends Component {
         var { grid, checkpointNodes, isPathDrawn } = this.state;
 
         // If there is a path, clear it and mark checkpoints as unvisited 
-        if(isPathDrawn) {
-            clearPath(this);
-            // Reset checkpoint node states
-            for(let checkpointNodeInfo of checkpointNodes){
-                checkpointNodeInfo.isVisited = false;
-            }
-        }
+        if(isPathDrawn) clearPath(this);
         
         // Get all empty nodes
         var emptyNodes = this.getEmptyNodes(grid);
@@ -199,6 +222,10 @@ export default class AlgoVisualizer extends Component {
         }
     }
 
+    toggleNodeDrawType(){
+        this.setState({ drawMode: this.state.drawMode === "wall" ? "weight" : "wall" });
+    }
+
     getDestinationNodeInfo() {
         var { checkpointNodes, finishNodeCoords } = this.state;
         for(var checkpointNodeInfo of checkpointNodes.reverse()) {
@@ -209,7 +236,7 @@ export default class AlgoVisualizer extends Component {
     }
 
     render() {
-        const {grid, startNodeCoords, finishNodeCoords, runTimeSeconds, numNodesInPath, numVisitedNodes, numWalls, lastAlgoRunString} = this.state;
+        const {grid, startNodeCoords, finishNodeCoords, runTimeSeconds, numNodesInPath, numVisitedNodes, numWalls, numWeights, weight, lastAlgoRunString} = this.state;
 
         return (
             <div className='body'>
@@ -218,10 +245,16 @@ export default class AlgoVisualizer extends Component {
                     <div className='menu-group-container'>
                         <div className='menu-group'>
                             <h2>Pathfinding</h2>
-                            <button className="btn btn-outline-dark" disabled={this.state.running} onClick={() => visualizAlgorithm(computeDijkstra, "Dijkstra", this, grid, startNodeCoords, finishNodeCoords)}>Dijkstra's Algorithm</button>
-                            <button className="btn btn-outline-dark" disabled={this.state.running} onClick={() => visualizAlgorithm(computeAStar, "A*", this, grid, startNodeCoords, finishNodeCoords)}>A*</button>
-                            <button className="btn btn-outline-dark" disabled={this.state.running} onClick={() => visualizAlgorithm(computeDFS, "DFS", this, grid, startNodeCoords, finishNodeCoords)}>DFS</button>
-                            <button className="btn btn-outline-dark" disabled={this.state.running} onClick={() => visualizAlgorithm(computeBFS, "BFS", this, grid, startNodeCoords, finishNodeCoords)}>BFS</button>
+                            <div className='menu-subgroup'>
+                                <h3>Weighted</h3>
+                                <button className="btn btn-outline-dark" disabled={this.state.running} onClick={() => visualizAlgorithm(computeDijkstra, "Dijkstra", this, grid, startNodeCoords, finishNodeCoords)}>Dijkstra</button>
+                                <button className="btn btn-outline-dark" disabled={this.state.running} onClick={() => visualizAlgorithm(computeAStar, "A*", this, grid, startNodeCoords, finishNodeCoords)}>A*</button>
+                            </div>
+                            <div className='menu-subgroup'>
+                                <h3>Unweighted</h3>
+                                <button className="btn btn-outline-dark" disabled={this.state.running} onClick={() => visualizAlgorithm(computeDFS, "DFS", this, grid, startNodeCoords, finishNodeCoords)}>DFS</button>
+                                <button className="btn btn-outline-dark" disabled={this.state.running} onClick={() => visualizAlgorithm(computeBFS, "BFS", this, grid, startNodeCoords, finishNodeCoords)}>BFS</button>
+                            </div>
                         </div>
                         <div className='menu-group'>
                             <h2>Generators</h2>
@@ -230,6 +263,7 @@ export default class AlgoVisualizer extends Component {
                         <div className='menu-group'>
                             <h2>Board Options</h2>
                             <button className="btn btn-outline-dark" disabled={this.state.running} onClick={()=> this.addCheckpointNode()}>Add checkpoint</button>
+                            <button className="btn btn-outline-dark" disabled={this.state.running} onClick={()=> this.toggleNodeDrawType()}>Draw: {this.state.drawMode}</button>
                             <button className="btn btn-outline-dark" disabled={this.state.running} onClick={()=> resetGrid(this)}>Clear Board</button>
                             <button className="btn btn-outline-dark" disabled={this.state.running} onClick={()=> clearPath(this)}>Clear Path</button>
                             <button className="btn btn-outline-dark" disabled={this.state.running} onClick={()=> clearPath(this, this.randomizeStartFinishNodes)}>Randomize Start and End Nodes</button>
@@ -244,6 +278,8 @@ export default class AlgoVisualizer extends Component {
                         numNodesInPath={numNodesInPath}
                         numVisitedNodes={numVisitedNodes}
                         numWalls={numWalls}
+                        numWeights={numWeights}
+                        weightValue={weight}
                         lastAlgoRunString={lastAlgoRunString}
                         ></Stats>
                     <div className="grid">
@@ -251,7 +287,7 @@ export default class AlgoVisualizer extends Component {
                             return (
                                 <div key={rowIdx}>
                                     {row.map((node, nodeIdx) => {
-                                        const { row, col, type, distance, text } = node;
+                                        const { row, col, type, distance, text, weight } = node;
                                         return (
                                             <Node
                                                 key={nodeIdx}
@@ -260,6 +296,7 @@ export default class AlgoVisualizer extends Component {
                                                 col={col}
                                                 type={type}
                                                 text={text}
+                                                weight={weight}
                                                 distance={distance}
                                                 onMouseDown={(row, col) => this.handleMouseDown(row, col)}
                                                 onMouseEnter={(row, col) => this.handleMouseEnter(row, col)}
@@ -283,17 +320,18 @@ function getWallUpdatedGrid(grid, row, col) {
     const node = newGrid[row][col];
     const newNode = {
         ...node,
-        type: node.type === "wallNode" ? "default" : node.type === "default" ? "wallNode" : node.type
+        type: node.type === "wallNode" ? "default" : node.type === "default" || node.type === "weightNode" ? "wallNode" : node.type
     };
     newGrid[row][col] = newNode;
     return newGrid;
 }
 
-function getNodeUpdatedGrid(grid, row, col, type, text="") {
+function getNodeUpdatedGrid(grid, row, col, type, text="", weight=1) {
     const newGrid = grid.slice();
     const node = newGrid[row][col];
     var newNode = {
         ...node,
+        weight,
         text,
         type
     };

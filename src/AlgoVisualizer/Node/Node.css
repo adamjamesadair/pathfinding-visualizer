@@ -7,7 +7,7 @@
   border: 1px solid white;
 }
 
-.node:hover:not(.node-start):not(.node-finish):not(.node-wall):not(.node-legend):not(.node-checkpoint) {
+.node:hover:not(.node-start):not(.node-finish):not(.node-wall):not(.node-legend):not(.node-checkpoint):not(.node-weight) {
   background-color: lightblue;
 }
 
@@ -113,4 +113,14 @@
 
 .node-current.node-checkpoint {
   background-color: #eeaddf;
+}
+
+.node-weight .node-center {
+  background-color: grey;
+  margin: auto;
+  margin-top: 3px;
+  width: 75%;
+  height: 75%;
+  border: 1px solid black;
+  border-radius: 100%;
 }

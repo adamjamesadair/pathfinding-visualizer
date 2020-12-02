@@ -14,7 +14,9 @@ export default class Stats extends Component {
             runTimeSeconds,
             numNodesInPath,
             numVisitedNodes,
-            numWalls
+            numWalls,
+            numWeights,
+            weightValue
         } = this.props;
 
         return (
@@ -24,6 +26,8 @@ export default class Stats extends Component {
                         <p className="stat"><b>Nodes in Path:</b> {numNodesInPath}</p>
                         <p className="stat"><b>Nodes Visited:</b> {numVisitedNodes}</p>
                         <p className="stat"><b>Walls:</b> {numWalls}</p>
+                        <p className="stat"><b>Weights:</b> {numWeights}</p>
+                        <p className="stat"><b>Weight Value:</b> {weightValue}</p>
                     </div>
         );
     }
