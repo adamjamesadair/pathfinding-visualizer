@@ -1,22 +1,32 @@
 {
   "files": {
-    "main.css": "/pathfinding-visualizer/static/css/main.e076eb0a.chunk.css",
-    "main.js": "/pathfinding-visualizer/static/js/main.b60720d0.chunk.js",
-    "main.js.map": "/pathfinding-visualizer/static/js/main.b60720d0.chunk.js.map",
+    "main.css": "/pathfinding-visualizer/static/css/main.56b07a3c.chunk.css",
+    "main.js": "/pathfinding-visualizer/static/js/main.0afa0c4e.chunk.js",
+    "main.js.map": "/pathfinding-visualizer/static/js/main.0afa0c4e.chunk.js.map",
     "runtime-main.js": "/pathfinding-visualizer/static/js/runtime-main.1300671c.js",
     "runtime-main.js.map": "/pathfinding-visualizer/static/js/runtime-main.1300671c.js.map",
-    "static/js/2.b3eb6beb.chunk.js": "/pathfinding-visualizer/static/js/2.b3eb6beb.chunk.js",
-    "static/js/2.b3eb6beb.chunk.js.map": "/pathfinding-visualizer/static/js/2.b3eb6beb.chunk.js.map",
+    "static/js/2.40dfccc1.chunk.js": "/pathfinding-visualizer/static/js/2.40dfccc1.chunk.js",
+    "static/js/2.40dfccc1.chunk.js.map": "/pathfinding-visualizer/static/js/2.40dfccc1.chunk.js.map",
     "index.html": "/pathfinding-visualizer/index.html",
-    "precache-manifest.0410a280d0f2ec50bb0874fb09b7f1cd.js": "/pathfinding-visualizer/precache-manifest.0410a280d0f2ec50bb0874fb09b7f1cd.js",
+    "precache-manifest.c6bc4b3dcd7f0db8363f15cbd8b1c263.js": "/pathfinding-visualizer/precache-manifest.c6bc4b3dcd7f0db8363f15cbd8b1c263.js",
     "service-worker.js": "/pathfinding-visualizer/service-worker.js",
-    "static/css/main.e076eb0a.chunk.css.map": "/pathfinding-visualizer/static/css/main.e076eb0a.chunk.css.map",
-    "static/js/2.b3eb6beb.chunk.js.LICENSE.txt": "/pathfinding-visualizer/static/js/2.b3eb6beb.chunk.js.LICENSE.txt"
+    "static/css/main.56b07a3c.chunk.css.map": "/pathfinding-visualizer/static/css/main.56b07a3c.chunk.css.map",
+    "static/js/2.40dfccc1.chunk.js.LICENSE.txt": "/pathfinding-visualizer/static/js/2.40dfccc1.chunk.js.LICENSE.txt",
+    "static/media/add_checkpoint.gif": "/pathfinding-visualizer/static/media/add_checkpoint.a6fab7e4.gif",
+    "static/media/board_options.JPG": "/pathfinding-visualizer/static/media/board_options.d2ce963a.JPG",
+    "static/media/dijkstra.gif": "/pathfinding-visualizer/static/media/dijkstra.0d3d2d40.gif",
+    "static/media/drag_nodes.gif": "/pathfinding-visualizer/static/media/drag_nodes.15a8036a.gif",
+    "static/media/draw_wall.gif": "/pathfinding-visualizer/static/media/draw_wall.fef37b75.gif",
+    "static/media/draw_weight.gif": "/pathfinding-visualizer/static/media/draw_weight.e3332e72.gif",
+    "static/media/help_btn.JPG": "/pathfinding-visualizer/static/media/help_btn.83bb874c.JPG",
+    "static/media/location.png": "/pathfinding-visualizer/static/media/location.cfc4da78.png",
+    "static/media/location_green.png": "/pathfinding-visualizer/static/media/location_green.9675d705.png",
+    "static/media/recursive_division.gif": "/pathfinding-visualizer/static/media/recursive_division.a36367eb.gif"
   },
   "entrypoints": [
     "static/js/runtime-main.1300671c.js",
-    "static/js/2.b3eb6beb.chunk.js",
-    "static/css/main.e076eb0a.chunk.css",
-    "static/js/main.b60720d0.chunk.js"
+    "static/js/2.40dfccc1.chunk.js",
+    "static/css/main.56b07a3c.chunk.css",
+    "static/js/main.0afa0c4e.chunk.js"
   ]
 }
