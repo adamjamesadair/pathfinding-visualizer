@@ -1,0 +1,131 @@
+.tutorial-modal {
+  margin: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 75%;
+  height: 75%;
+  min-width: 1000px;
+  min-height: 600px;
+  max-width: 100%;
+  max-height: 100%;
+  background-color: white;
+  box-shadow: -10px 10px 5px rgb(0, 0, 0, 0.5);
+  border: 2px solid rgba(0, 0, 0, 0.3);
+  overflow: auto;
+}
+
+.tutorial-modal h1 {
+  margin: auto;
+  padding: 25px 0px;
+}
+
+.tutorial-modal h2 {
+  margin: auto;
+  padding-bottom: 20px;
+}
+
+.close-btn {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+}
+
+.navigation-btn-container {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+}
+
+.next-btn {
+  display: inline-block;
+  right: 20px;
+  bottom: 20px;
+  margin-left: 10px;
+}
+
+.back-btn {
+  display: inline-block;
+  right: 150px;
+  bottom: 20px;
+  margin-right: 10px;
+}
+
+.close-btn:hover {
+  background-color: #6f5e76;
+}
+
+.next-btn:hover {
+  background-color: #6f5e76;
+}
+
+.back-btn:hover {
+  background-color: #6f5e76;
+}
+
+.page-number {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 18px;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.algorithm-category {
+  margin: auto;
+  padding-bottom: 50px;
+  width: 75%;
+}
+
+.algorithm-category p {
+  text-align: left;
+}
+
+img {
+  width: 250px;
+}
+
+.help-btn-img {
+  width: 75px;
+  padding-top: 50px;
+}
+
+.board-options-img {
+  width: 550px;
+  padding-top: 50px;
+}
+
+.generators-gif {
+  width: 750px;
+  padding-top: 25px;
+}
+
+.dragging-nodes-gif {
+  width: 650px;
+  padding-top: 10px;
+}
+
+.drawing-weights-gif {
+  width: 650px;
+  padding-top: 10px;
+}
+
+.adding-checkpoints-gif {
+  width: 650px;
+  padding-top: 10px;
+}
+
+.visualize-algorithms-gif {
+  width: 650px;
+  padding-top: 10px;
+}
+
+.location-icon-img {
+  width: 175px;
+  margin: 25px;
+}

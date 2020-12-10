@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import Node from './Node/Node';
 import Stats from './Stats/Stats';
 import Legend from './Legend/Legend';
+import TutorialModal from './TutorialModal/TutorialModal';
 
 import {computeDijkstra} from '../Algorithms/Search/dijkstra';
 import {computeAStar} from '../Algorithms/Search/aStar';
@@ -30,7 +31,9 @@ export default class AlgoVisualizer extends Component {
             numWalls: 0,
             numWeights: 0,
             weight: 5,
-            drawMode: "wall"
+            drawMode: "wall",
+            showModal: true,
+            tutorialPageNum: 1
         };
     }
 
@@ -235,6 +238,10 @@ export default class AlgoVisualizer extends Component {
         return {id:0, coords:finishNodeCoords, isVisited: false};
     }
 
+    toggleShowModal() {
+        this.setState({tutorialPageNum: 1, showModal: !this.state.showModal});
+    }
+
     render() {
         const {grid, startNodeCoords, finishNodeCoords, runTimeSeconds, numNodesInPath, numVisitedNodes, numWalls, numWeights, weight, lastAlgoRunString} = this.state;
 
@@ -262,8 +269,8 @@ export default class AlgoVisualizer extends Component {
                         </div>
                         <div className='menu-group'>
                             <h2>Board Options</h2>
-                            <button className="btn btn-outline-dark" disabled={this.state.running} onClick={()=> this.addCheckpointNode()}>Add checkpoint</button>
-                            <button className="btn btn-outline-dark" disabled={this.state.running} onClick={()=> this.toggleNodeDrawType()}>Draw: {this.state.drawMode}</button>
+                            <button className="btn btn-outline-dark" disabled={this.state.running} onClick={()=> this.addCheckpointNode()}>Add Checkpoint</button>
+                            <button className="btn btn-outline-dark" disabled={this.state.running} onClick={()=> this.toggleNodeDrawType()}>Draw: {this.state.drawMode.charAt(0).toUpperCase() + this.state.drawMode.slice(1)}</button>
                             <button className="btn btn-outline-dark" disabled={this.state.running} onClick={()=> resetGrid(this)}>Clear Board</button>
                             <button className="btn btn-outline-dark" disabled={this.state.running} onClick={()=> clearPath(this)}>Clear Path</button>
                             <button className="btn btn-outline-dark" disabled={this.state.running} onClick={()=> clearPath(this, this.randomizeStartFinishNodes)}>Randomize Start and End Nodes</button>
@@ -272,6 +279,7 @@ export default class AlgoVisualizer extends Component {
                 </div>
 
                 <div className="grid-container">
+                    <button className="btn help-btn" onClick={()=> this.toggleShowModal()}><p className='help-txt'>?</p></button>
                     <Legend></Legend>
                     <Stats
                         runTimeSeconds={runTimeSeconds}
@@ -309,6 +317,14 @@ export default class AlgoVisualizer extends Component {
                         })}
                     </div>
                 </div>
+
+                <TutorialModal
+                    show={this.state.showModal}
+                    pageNum={this.state.tutorialPageNum}
+                    onHide={() => this.toggleShowModal()}
+                    onNext={() => this.setState({tutorialPageNum: this.state.tutorialPageNum + 1})}
+                    onBack={() => this.setState({tutorialPageNum: this.state.tutorialPageNum > 0 ? this.state.tutorialPageNum - 1 : 0})}
+                />
                 
             </div>
         );

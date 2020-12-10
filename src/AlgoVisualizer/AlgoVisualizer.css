@@ -50,3 +50,28 @@
   display: inline-block;
   padding: 0px 2px;
 }
+
+.help-btn {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: black;
+  opacity: 0.5;
+  border-radius: 100%;
+  border: 1px solid white;
+}
+
+.help-btn:hover {
+  opacity: 1;
+}
+
+.help-txt {
+  margin: auto;
+  position: relative;
+  top: -6px;
+  color: white;
+  font-size: 26px;
+  font-weight: 500;
+}
