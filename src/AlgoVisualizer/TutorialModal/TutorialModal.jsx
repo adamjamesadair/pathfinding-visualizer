@@ -29,7 +29,7 @@ export default class TutorialModal extends Component {
                         page_2: 
                             <div>
                                 <h1>What is pathfinding?</h1>
-                                <h2>The objective pathfinding algorithms is to find a path between two or more points.</h2>
+                                <h2>The objective of pathfinding algorithms is to find a path between two or more points.</h2>
                                 <p>Some pathfinding algorithms aim to find the shortest path while others are satisfied with any path. Some pathfinding algorithms called <b><i>weighted</i></b> algorithms take the "cost" of moving from one node to another into consideration while <b><i>unweighted</i></b> algorithms do not. There are many pathfinding algorithms out there to explore. This application hopes to provides a playground to explore and understand a few of these pathfinding algorithms.</p>
                             </div>,
                         page_3: 
@@ -45,18 +45,18 @@ export default class TutorialModal extends Component {
                                 <div className="algorithm-category">
                                     <h3>Weighted Algorithms</h3>
                                     <p><b>Dijkstra's Algorithm: </b> This algorithm guarantees the shortest path.</p>
-                                    <p><b>A*: </b> A best-first search that makes use of a heuristic to determine the next node to visit. For this application, the heuristic is <b>manhattan distance</b>. This algorithm guarantees the shortest path.</p>
+                                    <p><b>A*: </b> A best-first search that makes use of a heuristic to determine the next node to visit. For this application, the heuristic is <b>Manhattan Distance</b>. This algorithm guarantees the shortest path.</p>
                                 </div>
                                 <div className="algorithm-category">
                                     <h3>Unweighted Algorithms</h3>
                                     <p><b>Depth-First Search (DFS): </b> Bad for pathfinding, depth-first search explores as far as possible on a single path, backtracking when a deadend is reached. This algorithm does <b>not</b> guarantee the shortest path.</p>
-                                    <p><b>Bredth-First Search (BFS): </b> Good for pathfinding, breadth-first search explores all of the neighbor nodes, then their neighbors level by level. This algorithm guarantees the shortest path.</p>
+                                    <p><b>Breadth-First Search (BFS): </b> Good for pathfinding, breadth-first search explores all of the neighbor nodes, then their neighbors level by level. This algorithm guarantees the shortest path.</p>
                                 </div>
                             </div>,
                         page_5: 
                             <div>
                                 <h1>Drawing Walls</h1>
-                                <h2>Click and drag on the grid to draw wall nodes. Clicking or draging over a wall node will return it to an empty node.</h2>
+                                <h2>Click and drag on the grid to draw wall nodes. Clicking or dragging over a wall node will return it to an empty node.</h2>
                                 <p>Walls are impenetrable. This means that a path cannot pass through a wall node. </p>
                                 <img src={drawWall} alt="Gif of drawing walls on the grid."/>
                             </div>,
